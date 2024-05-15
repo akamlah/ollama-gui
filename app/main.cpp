@@ -1,12 +1,11 @@
 #include <QApplication>
-#include <QPushButton>
+#include "OllamaGui.h"
 
 int main(int argc, char **argv)
 {
     QApplication app (argc, argv);
-
-    QPushButton button ("Hello world !");
-    button.show();
+    OllamaGui ollama;
+    ollama.show();
 
     return app.exec();
 }
