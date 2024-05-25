@@ -13,6 +13,7 @@ SelectModel::SelectModel(QWidget *parent)
     //later: "updateLabel signal with "setText" on url change
     _ui->urlLabel->setText( "Currentnly connected to ollama server instance at: " +
         Api::Endpoints::get_endpoints()->get_base_url().toString() );
+    _ui->urlLabel->setWordWrap(true);
     _ui->currentlyLoadedLabel->setStyleSheet("font-weight: bold;");
 
     fetch_tags();

@@ -7,19 +7,23 @@ Chat::Chat(QString model, QWidget *parent)
     , _ui(new Ui::Chat)
 {
     _ui->setupUi(this);
-    _ui->ActiveChatGroup->setTitle("Conversation");
-    _ui->modelLabel->setText("Model: " + model);
+    // _ui->ActiveChatGroup->setTitle("Conversation");
+    // _ui->modelLabel->setText("Model: " + model);
+    _ui->modelLabel->setText("");
     _ui->modelLabel->setStyleSheet("font-weight: bold;");
     // _ui->ModelListWidgets->setH
     connect(_ui->SendPromptButton, &QPushButton::clicked,
         this, [this]{ Chat::send_prompt(); });
-    connect(_ui->changeModel, &QPushButton::clicked, 
+    connect(_ui->closeConversationButton, &QPushButton::clicked, 
         this, [this](){
-            emit change_model_request_signal();
+            emit close_conversation_request_signal();
         });
+    _conversations.push_back("conv 1");
+    _ui->ConversationsListWidget->addItem("Conv " +  QString::fromUtf8(std::to_string(_conversations.size()).c_str()));
 }
 
 Chat::~Chat() {
+    qDebug() << "----- DESTROY";
 }
 
 

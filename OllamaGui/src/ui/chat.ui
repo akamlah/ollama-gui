@@ -26,9 +26,9 @@
                     </widget>
                 </item>
                 <item>
-                    <widget class="QPushButton" name="changeModel">
+                    <widget class="QPushButton" name="closeConversationButton">
                         <property name="text">
-                            <string>Change model</string>
+                            <string>Close tab</string>
                         </property>
                     </widget>
                 </item>
@@ -43,9 +43,9 @@
                     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="5,3">
                         <item>
                             <widget class="QGroupBox" name="ConversationsGroup">
-                                <property name="title">
+                                <!-- <property name="title">
                                     <string>Conversations</string>
-                                </property>
+                                </property> -->
                                 <layout class="QVBoxLayout" name="verticalLayout_278" stretch="1,6">
                                     <item>
                                         <widget class="QPushButton" name="NewConversationButton">
@@ -60,7 +60,7 @@
                                 </layout>
                             </widget>
                         </item>
-                        <item>
+                        <!-- <item>
                             <widget class="QGroupBox" name="ModelListGroup">
                                 <property name="title">
                                     <string>Active Models</string>
@@ -71,15 +71,15 @@
                                     </item>
                                 </layout>
                             </widget>
-                        </item>
+                        </item> -->
                     </layout>
                 </item>
 
                 <item>
                     <widget class="QGroupBox" name="ActiveChatGroup">
-                        <property name="title">
+                        <!-- <property name="title">
                             <string>&lt;Model Name&gt;</string>
-                        </property>
+                        </property> -->
                         <layout class="QVBoxLayout" name="verticalLayout" stretch="11,2,1">
                             <item>
                                 <widget class="QListWidget" name="MessageDisplayListWidget"/>

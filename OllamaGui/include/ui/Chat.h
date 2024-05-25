@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QJsonObject>
-
+#include <vector>
 namespace Ui {
     class Chat;
 }
@@ -14,19 +14,20 @@ class Chat: public QWidget
 
 public:
 
-    Chat(QString model, QWidget *parent);
+    Chat(QString model, QWidget *parent = nullptr);
     ~Chat();
 
 private:
     QWidget *_parent;
     Ui::Chat *_ui;
     QString _model;
+    std::vector<QString> _conversations;
 
 private slots:
     void send_prompt();
 
 signals:
-    void change_model_request_signal();
+    void close_conversation_request_signal();
 
 };
 

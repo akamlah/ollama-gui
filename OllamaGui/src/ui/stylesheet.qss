@@ -1,0 +1,83 @@
+QMainWindow {
+    background-color: #202020;
+}
+
+QPushButton {
+    background-color: #303030;
+    border: 2px solid #333333;
+    border-radius: 6px;
+    top: 2px; left: 2px;
+    color: #afafaf;
+    padding: 2px;
+    margin: 2px;
+}
+
+QPushButton::hover {
+    background-color: #352B57;
+}
+
+QLabel {
+    color: #a1a1a1;
+    padding: 2px;
+}
+
+QListWidget {
+    background-color: #171717;
+    color: #afafaf;
+    padding: 10px;
+}
+
+QListWidget::item {
+    padding: 10px;
+}
+
+QListWidget::item::hover, QListWidget::item::selected  {
+    background-color: #352B57;
+}
+
+QListWidget[objectName^="MessageDisplayListWidget"]  {
+    background-color: #202020;
+    padding: 10px;
+    border: none;
+    color: #afafaf;
+}
+
+QGroupBox {
+    border: 2px solid #252525;
+    /* padding: 10px; */
+}
+
+QDialog {
+    background-color: #202020;
+}
+
+QPlainTextEdit {
+    background-color: #171717;
+    color: #a1a1a1;
+
+}
+
+QTabWidget::page {
+    background-color: #101010;
+
+}
+
+QTabWidget::pane {
+    border-top: 2px solid #352B57;
+
+}
+
+QTabBar::tab {
+    background: #303030;
+    color: #afafaf;
+    font: bold;
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
+    padding: 10px;
+    min-width: 8ex;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+    background: #352B57;
+
+}
