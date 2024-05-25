@@ -2,9 +2,12 @@
 #define ENDPOINTS_H
 
 #include <QUrl>
+#include <QObject>
 
 namespace Api {
-
+    // class Endpoints;
+    // class Request;
+// }
 /* 
 Content:
     class Endpoints;
@@ -28,7 +31,7 @@ Content:
  * \endcode
  * 
  */
-class Endpoints {
+class Endpoints: public QObject {
 
     private:
 
@@ -69,23 +72,10 @@ class Endpoints {
         static Endpoints* get_endpoints();
 
         // get and set base url
-        const QUrl& get_base_url() { return ollama_base_url; }
-        void set_base_url(const QUrl& url) { ollama_base_url = url; }
+        const QUrl& get_base_url();
+        void set_base_url(const QUrl& url);
 
 };
-
-QUrl Endpoints::ollama_base_url = QUrl("http://127.0.0.1:11434");
-
-const Endpoints::t_ollama_post_urls Endpoints::api_urls_post;
-const Endpoints::t_ollama_get_urls Endpoints::api_urls_get;
-
-Endpoints* Endpoints::instance = nullptr;
-
-Endpoints* Endpoints::get_endpoints() {
-    if (Endpoints::instance == nullptr)
-        Endpoints::instance = new Endpoints;
-    return Endpoints::instance; 
-}
 
 
 /* 

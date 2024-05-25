@@ -4,6 +4,15 @@
 #include <QWidget>
 #include <QJsonObject>
 #include <vector>
+#include <QWidget>
+#include <QNetworkReply>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QRestReply>
+#include <QNetworkAccessManager>
+#include <Api.h>
+
 namespace Ui {
     class Chat;
 }
@@ -22,6 +31,8 @@ private:
     Ui::Chat *_ui;
     QString _model;
     std::vector<QString> _conversations;
+    QNetworkAccessManager *_network_manager;
+
 
 private slots:
     void send_prompt();

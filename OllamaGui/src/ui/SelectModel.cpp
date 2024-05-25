@@ -105,6 +105,6 @@ void SelectModel::fetch_tags() {
         }
         else
             qDebug() << "Error: request";
-        delete reply;
+        reply->deleteLater();
     });
 }

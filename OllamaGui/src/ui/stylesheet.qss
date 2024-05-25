@@ -16,6 +16,10 @@ QPushButton::hover {
     background-color: #352B57;
 }
 
+QPushButton::disabled {
+    background-color: black;
+}
+
 QLabel {
     color: #a1a1a1;
     padding: 2px;
@@ -24,14 +28,17 @@ QLabel {
 QListWidget {
     background-color: #171717;
     color: #afafaf;
+}
+
+QListWidget[objectName^="modelsList"] {
     padding: 10px;
 }
 
-QListWidget::item {
+QListWidget[objectName^="modelsList"]::item {
     padding: 10px;
 }
 
-QListWidget::item::hover, QListWidget::item::selected  {
+QListWidget::item[objectName^="modelsList"]::hover, QListWidget[objectName^="modelsList"]::item::selected  {
     background-color: #352B57;
 }
 

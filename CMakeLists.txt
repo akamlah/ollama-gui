@@ -26,6 +26,7 @@ file(GLOB UI_QML "${PROJECT_SOURCE_DIR}/OllamaGui/src/ui/*.ui")
 file(GLOB GEN_HEADERS "${PROJECT_SOURCE_DIR}/OllamaGui/include/*.h")
 file(GLOB UI_HEADERS "${PROJECT_SOURCE_DIR}/OllamaGui/include/ui/*.h")
 set(HEADERS ${UI_HEADERS} ${GEN_HEADERS})
+# set(HEADERS ${UI_HEADERS})
 
 qt_add_executable(ollamagui
     MANUAL_FINALIZATION
@@ -44,14 +45,15 @@ target_link_libraries(ollamagui PRIVATE Qt6::Widgets)
 target_link_libraries(ollamagui PRIVATE Qt6::Network)
 target_link_libraries(ollamagui PRIVATE Qt6::Gui)
 target_link_libraries(ollamagui PRIVATE Qt6::Core5Compat)
+# target_link_libraries(ollamagui PUBLIC ${GEN_HEADERS})
 
-include(GNUInstallDirs)
-install(TARGETS ollamagui
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+# include(GNUInstallDirs)
+# install(TARGETS ollamagui
+#     BUNDLE DESTINATION .
+#     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+# )
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(ollamagui)
-endif()
+# if(QT_VERSION_MAJOR EQUAL 6)
+#     qt_finalize_executable(ollamagui)
+# endif()
