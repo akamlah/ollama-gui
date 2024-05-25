@@ -25,6 +25,7 @@ QLabel {
     padding: 2px;
 }
 
+
 QListWidget {
     background-color: #171717;
     color: #afafaf;
@@ -33,21 +34,24 @@ QListWidget {
 QListWidget[objectName^="modelsList"] {
     padding: 10px;
 }
-
 QListWidget[objectName^="modelsList"]::item {
     padding: 10px;
 }
-
 QListWidget::item[objectName^="modelsList"]::hover, QListWidget[objectName^="modelsList"]::item::selected  {
     background-color: #352B57;
 }
 
+
 QListWidget[objectName^="MessageDisplayListWidget"]  {
     background-color: #202020;
-    padding: 10px;
+    alternate-background-color: #252525;
     border: none;
     color: #afafaf;
 }
+QListWidget[objectName^="MessageDisplayListWidget"]::item {
+    padding: 10px;
+}
+
 
 QGroupBox {
     border: 2px solid #252525;

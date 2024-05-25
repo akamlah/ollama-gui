@@ -31,8 +31,10 @@ private:
     Ui::Chat *_ui;
     QString _model;
     std::vector<QString> _conversations;
+    std::vector<QString> _qas;
     QNetworkAccessManager *_network_manager;
 
+    void get_title();
 
 private slots:
     void send_prompt();
