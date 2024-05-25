@@ -8,7 +8,7 @@ namespace Api {
 /* 
 Content:
     class Endpoints;
-    class Requests;
+    class Request;
 */
 
 /*!
@@ -91,7 +91,8 @@ Endpoints* Endpoints::get_endpoints() {
 /* 
 * Class that stores pre-formatted json objects for post requests
 */
-class Requests {
+class Request {
+    public:
     
 };
 

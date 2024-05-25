@@ -11,49 +11,31 @@ SelectModel::SelectModel(QWidget *parent)
     _ui->setupUi(this);
 
     //later: "updateLabel signal with "setText" on url change
-    _ui->urlLabel->setText(
-        "Currentnly connected to ollama server instance at: " +
-        Api::Endpoints::get_endpoints()->get_base_url().toString()
-    );
+    _ui->urlLabel->setText( "Currentnly connected to ollama server instance at: " +
+        Api::Endpoints::get_endpoints()->get_base_url().toString() );
+    _ui->currentlyLoadedLabel->setStyleSheet("font-weight: bold;");
 
     fetch_tags();
     
-    QObject::connect(
-        _ui->modelsList, 
-        &QListWidget::itemDoubleClicked,
-        this,
-        [this] { SelectModel::model_was_double_clicked_slot(this); }
-    );
-    
-    QObject::connect(
-        this, 
-        &SelectModel::model_was_confirmed_signal,
-        this,
-        &SelectModel::model_was_selected_slot
-    );
-
-    QObject::connect(
-        _ui->refreshButton, 
-        &QPushButton::clicked,
-        this,
-        &SelectModel::fetch_tags
-    );
-
+    QObject::connect( _ui->modelsList, &QListWidget::itemDoubleClicked,
+        this, [this] { SelectModel::model_was_double_clicked_slot(); } );
+    QObject::connect( this, &SelectModel::model_was_confirmed_signal,
+        this, &SelectModel::model_was_selected_slot );
+    QObject::connect( _ui->refreshButton, &QPushButton::clicked,
+        this, &SelectModel::fetch_tags );
 }
 
-SelectModel::~SelectModel() {
+SelectModel::~SelectModel() { }
 
-}
-
-void SelectModel::model_was_double_clicked_slot(SelectModel* sm) {
+void SelectModel::model_was_double_clicked_slot() {
     QDialog *dialog = new QDialog(this);
     QGridLayout *layout = new QGridLayout(dialog);
     QPushButton *confirm_btn = new QPushButton(dialog);
     QPushButton *cancel_btn = new QPushButton(dialog);
     QLabel *label = new QLabel(dialog);
 
-    auto model_selected = sm->_ui->modelsList->selectedItems();
-    int index = sm->_ui->modelsList->row(model_selected[0]);
+    auto model_selected = _ui->modelsList->selectedItems();
+    int index = _ui->modelsList->row(model_selected[0]);
     QString model_name = _model_list.at(index);
 
     dialog->setMinimumSize(_parent->minimumSize());
@@ -70,10 +52,12 @@ void SelectModel::model_was_double_clicked_slot(SelectModel* sm) {
     connect(confirm_btn, &QPushButton::clicked, this, [this, dialog, model_name]() {
         dialog->close();
         emit model_was_confirmed_signal(model_name);
+        delete dialog; // should dealloc children
     });
 
     connect(cancel_btn, &QPushButton::clicked, this, [this, dialog]() {
         dialog->close();
+        delete dialog;  // should dealloc children
     });
 
     dialog->show();
@@ -85,21 +69,15 @@ void SelectModel::model_was_selected_slot(QString model_name) {
 }
 
 void SelectModel::display_tags() {
-    qDebug() << "Displaying tags";
-    if (!_model_list.empty()) {
-        _ui->modelsList->clear();
-        qDebug() << " tags not empty";
-        for (QString tag: _model_list) {
-            qDebug() << tag;
-            // _ui->modelsTable->insertRow(_ui->modelsTable->rowCount());
-            _ui->modelsList->addItem(tag);
-        }
-    }
+    if (_model_list.empty())
+        return ;
+    _ui->modelsList->clear();
+    for (QString tag: _model_list)
+        _ui->modelsList->addItem(tag);
 }
 
 void SelectModel::fetch_tags() {
     _model_list.clear();
-    qDebug() << "Fetching tags";
     QNetworkRequest request;
     request.setUrl(Api::Endpoints::get_endpoints()->api_urls_get.tags_url);
     QNetworkReply *reply = _network_manager->get(request);
@@ -111,17 +89,10 @@ void SelectModel::fetch_tags() {
                 QJsonDocument json_doc =  QJsonDocument::fromJson(response);
                 if (json_doc.isObject()) {
                     QJsonObject json_obj = json_doc.object();
-                    // qDebug() << "Json doc is object;";
-                    // qDebug() << json_obj;
                     QJsonArray models = json_obj.value("models").toArray();
-                    // qDebug() << models;
                     for (int i = 0; i < models.size(); i++) {
-                        // qDebug() << "here";
                         QJsonObject model = models[i].toObject();
-                        // qDebug() << model;
                         _model_list.push_back(model.value("name").toString());
-                        // qDebug() << model.value("name").toString();
-                        // _ui->ModelListWidget->addItem(model.value("name").toString());
                     }
                     display_tags();
                 }
@@ -133,5 +104,6 @@ void SelectModel::fetch_tags() {
         }
         else
             qDebug() << "Error: request";
+        delete reply;
     });
 }

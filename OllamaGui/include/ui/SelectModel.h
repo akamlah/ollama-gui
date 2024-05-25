@@ -25,7 +25,7 @@ class SelectModel: public QWidget
 
 public:
 
-    SelectModel(QWidget *parent = nullptr);
+    SelectModel(QWidget *parent);
     ~SelectModel();
 
 signals:
@@ -33,7 +33,7 @@ signals:
     void model_was_selected_signal(QString model_name);
 
 private slots:
-    void model_was_double_clicked_slot(SelectModel* sm);
+    void model_was_double_clicked_slot();
     void model_was_selected_slot(QString model_name);
     void fetch_tags();
 

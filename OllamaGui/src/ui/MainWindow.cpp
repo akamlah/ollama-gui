@@ -17,21 +17,33 @@ MainWindow::MainWindow(QMainWindow *parent)
     setCentralWidget(_stackedWidget); 
 
     SelectModel *select_model = new SelectModel(this);
-    Chat *chat = new Chat(this);
     _stackedWidget->addWidget(select_model);
-    _stackedWidget->addWidget(chat);
 
     QObject::connect(
         select_model, 
-        &SelectModel::model_was_selected_signal, 
+        SIGNAL(model_was_selected_signal(QString)),
         this,
-        &MainWindow::model_was_selected_slot
+        SLOT(model_was_selected_slot(QString))
     );
+
 }
 
 void MainWindow::model_was_selected_slot(QString name) {
-    _stackedWidget->setCurrentIndex(1);
-    qDebug() << name;
+    // qDebug() << "Running: " << name;
+    Chat *chat = new Chat(name, this);
+    _stackedWidget->addWidget(chat);
+    _stackedWidget->setCurrentIndex(_stackedWidget->count() - 1);
+    QObject::connect(
+        chat,
+        SIGNAL(change_model_request_signal()),
+        this,
+        SLOT(change_model_request_slot())
+    );
+}
+
+void MainWindow::change_model_request_slot() {
+    // qDebug() << "Running: " << name;
+    _stackedWidget->setCurrentIndex(0);
 }
 
 MainWindow::~MainWindow() {

@@ -2,6 +2,7 @@
 #define OLLAMAGUI_UI_Chat_H
 
 #include <QWidget>
+#include <QJsonObject>
 
 namespace Ui {
     class Chat;
@@ -13,14 +14,19 @@ class Chat: public QWidget
 
 public:
 
-    Chat(QWidget *parent = nullptr);
+    Chat(QString model, QWidget *parent);
     ~Chat();
 
 private:
     QWidget *_parent;
     Ui::Chat *_ui;
+    QString _model;
 
-// private slots:
+private slots:
+    void send_prompt();
+
+signals:
+    void change_model_request_signal();
 
 };
 

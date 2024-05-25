@@ -46,6 +46,7 @@ public:
 
 public slots:
     void model_was_selected_slot(QString name);
+    void change_model_request_slot();
 
 private:
     // void api_get_tags();
