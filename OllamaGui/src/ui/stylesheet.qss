@@ -4,11 +4,12 @@ QMainWindow {
 
 QPushButton {
     background-color: #303030;
-    border: 2px solid #333333;
+    /* border: 2px solid #333333; */
+    border: none;
     border-radius: 6px;
     top: 2px; left: 2px;
-    color: #d0d0d0;
-    padding: 2px;
+    color: #dadada;
+    padding: 10px;
     margin: 2px;
 }
 
@@ -25,8 +26,9 @@ QPushButton[objectName^="SendPromptButton"]::hover {
 }
 
 QPushButton::disabled {
-    background-color: black;
+    color: #606060;
 }
+
 
 QLabel {
     color: #a1a1a1;
@@ -45,27 +47,30 @@ QListWidget[objectName^="modelsList"] {
 QListWidget[objectName^="modelsList"]::item {
     padding: 10px;
 }
-QListWidget::item[objectName^="modelsList"]::hover, QListWidget[objectName^="modelsList"]::item::selected  {
+QListWidget::item[objectName^="modelsList"]::hover, QListWidget::item[objectName^="modelsList"]::selected  {
     background-color: #534091;
 }
 
 
-QListWidget[objectName^="MessageDisplayListWidget"]  {
+QTextEdit[objectName^="MessageDisplay"]  {
     background-color: #202020;
-    alternate-background-color: #252525;
+    /* alternate-background-color: #252525; */
     border: none;
+
     color: #d0d0d0;
 }
 
 QGroupBox {
-    border: 2px solid #303030;
+    /* border: none; */
+    border: 1.5px solid #303030;
+    border-radius: 6px;
 }
 
 QDialog {
     background-color: #202020;
 }
 
-QPlainTextEdit {
+QPlainTextEdit[objectName^="PromptEditor"] {
     background-color: #171717;
     color: #d0d0d0;
     padding: 10px;
@@ -85,8 +90,8 @@ QTabBar::tab {
     background: #303030;
     color: #dfdfdf;
     font: bold;
-    border-top-left-radius: 1.5px;
-    border-top-right-radius: 1.5px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 1px;
     padding: 10px;
     min-width: 8ex;
 }

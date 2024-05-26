@@ -21,19 +21,20 @@
                 <item>
                     <widget class="QLabel" name="modelLabel">
                         <property name="text">
-                            <string>Model</string>
+                            <string></string>
                         </property>
                     </widget>
                 </item>
                 <item>
-                    <widget class="QPushButton" name="closeConversationButton">
+                    <widget class="QPushButton" name="DisconnectButton">
                         <property name="text">
-                            <string>Close tab</string>
+                            <string>Disconnect</string>
                         </property>
                     </widget>
                 </item>
             </layout>
         </item>
+
 
         <item>
 
@@ -60,39 +61,26 @@
                                 </layout>
                             </widget>
                         </item>
-                        <!-- <item>
-                            <widget class="QGroupBox" name="ModelListGroup">
-                                <property name="title">
-                                    <string>Active Models</string>
-                                </property>
-                                <layout class="QVBoxLayout" name="verticalLayout_234">
-                                    <item>
-                                        <widget class="QListWidget" name="ModelListWidgets"/>
-                                    </item>
-                                </layout>
-                            </widget>
-                        </item> -->
+
                     </layout>
                 </item>
 
                 <item>
                     <widget class="QGroupBox" name="ActiveChatGroup">
-                        <!-- <property name="title">
-                            <string>&lt;Model Name&gt;</string>
-                        </property> -->
+
                         <layout class="QVBoxLayout" name="verticalLayout" stretch="11,2,1">
                             <item>
+                                <widget class="QTextEdit" name="MessageDisplay"/>
+                            </item>
+                            <!-- <item>
                                 <widget class="QListWidget" name="MessageDisplayListWidget"/>
-                            </item>
-                            <item>
-                                <widget class="QPlainTextEdit" name="PromptEditor"/>
-                            </item>
+                            </item> -->
                             <item>
                                 <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="5,1">
                                     <item>
                                         <widget class="QLabel" name="label">
                                             <property name="text">
-                                                <string>Prompt</string>
+                                                <string>[Ctrl + S] to send</string>
                                             </property>
                                         </widget>
                                     </item>
@@ -104,6 +92,9 @@
                                         </widget>
                                     </item>
                                 </layout>
+                            </item>
+                            <item>
+                                <widget class="QPlainTextEdit" name="PromptEditor"/>
                             </item>
                         </layout>
                     </widget>
@@ -117,156 +108,3 @@
 <resources/>
 <connections/>
 </ui>
-
-
-<!-- <?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
- <class>Chat</class>
- <widget class="QWidget" name="Chat">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>801</width>
-    <height>600</height>
-   </rect>
-  </property>
-  <property name="focusPolicy">
-   <enum>Qt::FocusPolicy::ClickFocus</enum>
-  </property>
-  <property name="windowTitle">
-   <string>Ollama Gui</string>
-  </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,4">
-    <item>
-     <widget class="QGroupBox" name="ConversationsGroup">
-      <property name="title">
-       <string>Conversations</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,12">
-       <item>
-        <widget class="QPushButton" name="NewConversationButton">
-         <property name="text">
-          <string>New</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListWidget" name="ConversationsListWidget"/>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="ActiveChatGroup">
-      <property name="title">
-       <string>&lt;Model Name&gt;</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="11,2,1">
-       <item>
-        <widget class="QListWidget" name="MessageDisplayListWidget"/>
-       </item>
-       <item>
-        <widget class="QPlainTextEdit" name="PromptEditor"/>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="5,1">
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Prompt</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="SendPromptButton">
-           <property name="text">
-            <string>Send Prompt</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-
-  <widget class="QWidget" name="setupWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_4">
-    <item>
-        <widget class="QListWidget" name="ModelListWidget"/>
-    </item>
-   </layout>
-  </widget>
-
-  <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="toolBarConversations">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionChange_model"/>
-   <addaction name="actionReconnect"/>
-   <addaction name="actionView_Logs"/>
-  </widget>
-
-  <action name="actionNew_Converstaion">
-   <property name="text">
-    <string>New Converstaion</string>
-   </property>
-  </action>
-  <action name="actionHistory">
-   <property name="text">
-    <string>History</string>
-   </property>
-  </action>
-  <action name="actionChange_profile">
-   <property name="text">
-    <string>Change profile</string>
-   </property>
-  </action>
-  <action name="actionChange_model">
-   <property name="text">
-    <string>Change model</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-
-  <action name="actionReconnect">
-   <property name="text">
-    <string>Reconnect</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actionView_Logs">
-   <property name="text">
-    <string>View Logs</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actionSend_Prompt">
-   <property name="text">
-    <string>Send Prompt</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
- </widget>
- <resources/>
- <connections/>
-</ui> -->

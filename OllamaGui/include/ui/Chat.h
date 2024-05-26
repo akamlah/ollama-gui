@@ -16,6 +16,8 @@
 #include <QGridLayout>
 #include <QtGui>
 #include <QLabel>
+#include <QTextDocument>
+#include <QAction>
 
 namespace Ui {
     class Chat;
@@ -26,18 +28,20 @@ class Chat: public QWidget
     Q_OBJECT
 
 public:
-    class MessageWidget: public QWidget {
-    public:
-        typedef enum role {
-            FromUser,
-            FromModel
-        } Role ;
-    public:
-        MessageWidget(Role role, QString sender, QString content, QWidget *parent = nullptr);
-        ~MessageWidget();
-        QLabel *_contentLabel;
+    // class MessageWidget: public QWidget {
+    // public:
+    //     typedef enum role {
+    //         FromUser,
+    //         FromModel
+    //     } Role ;
+    // public:
+    //     MessageWidget(Role role, QString sender, QString content, QWidget *parent = nullptr);
+    //     ~MessageWidget();
+    //     QLabel *_contentLabel;
 
-    };
+    // };
+
+
 
 
 public:
@@ -53,8 +57,14 @@ private:
     std::vector<QString> _qas;
     QNetworkAccessManager *_network_manager;
 
+    QTextDocument *_doc;
+    QTextCursor* _cursor;
+
     void get_title();
-    void add_message_item(MessageWidget::Role role, QString sender, QString content);
+    void load_model();
+    void wrap_set_enabled_send_button(bool setEnabled);
+
+    // void add_message_item(MessageWidget::Role role, QString sender, QString content);
 
 private slots:
     void send_prompt();

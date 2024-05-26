@@ -1,6 +1,7 @@
 #include <ui/SelectModel.h>
 #include "./ui_selectmodel.h"
 #include <api/Api.h>
+#include <ui/Dialog.h>
 
 SelectModel::SelectModel(QWidget *parent) 
     : QWidget(parent)
@@ -29,39 +30,28 @@ SelectModel::SelectModel(QWidget *parent)
         this, &SelectModel::fetch_tags );
 }
 
-SelectModel::~SelectModel() { }
+SelectModel::~SelectModel() { delete _ui; }
 
 void SelectModel::model_was_double_clicked_slot() {
-    QDialog *dialog = new QDialog(this);
-    QGridLayout *layout = new QGridLayout(dialog);
-    QPushButton *confirm_btn = new QPushButton(dialog);
-    QPushButton *cancel_btn = new QPushButton(dialog);
-    QLabel *label = new QLabel(dialog);
 
     auto model_selected = _ui->modelsList->selectedItems();
     int index = _ui->modelsList->row(model_selected[0]);
     QString model_name = _model_list.at(index);
+    QString message = "Load " + model_name + " ?";
 
-    dialog->setMinimumSize(_parent->minimumSize());
-    // dialog->move(this->geometry().center() - dialog->rect().center());
+    Dialog * dialog = new Dialog(message);
+    // dialog->setMinimumSize(this->minimumSize());
+    // dialog->setMinimumSize(_parent->minimumSize());
 
-    label->setText("Run model " + model_name + " ?");
-    confirm_btn->setText("Confirm");
-    cancel_btn->setText("Cancel");
-    
-    layout->addWidget(label, 0, 0);
-    layout->addWidget(confirm_btn, 1, 0);
-    layout->addWidget(cancel_btn, 1, 1);
-    
-    connect(confirm_btn, &QPushButton::clicked, this, [this, dialog, model_name]() {
+    connect(dialog, &Dialog::confirmed_signal, this, [this, dialog, model_name]() {
         dialog->close();
         emit model_was_confirmed_signal(model_name);
-        delete dialog; // should dealloc children
+        dialog->deleteLater();
     });
 
-    connect(cancel_btn, &QPushButton::clicked, this, [this, dialog]() {
+    connect(dialog, &Dialog::cancelled_signal, this, [this, dialog]() {
         dialog->close();
-        delete dialog;  // should dealloc children
+        dialog->deleteLater();
     });
 
     dialog->show();
