@@ -1,23 +1,31 @@
 #include <ui/Chat.h>
 #include "./ui_chat.h"
-// #include <Api.h>
+
+Chat::MessageWidget::~MessageWidget() {}
 
 Chat::Chat(QString model, QWidget *parent) 
     : _model(model)
+    ,  QWidget(parent)
     , _parent(parent) 
     , _ui(new Ui::Chat)
     , _network_manager(new QNetworkAccessManager(this))
 {
     _ui->setupUi(this);
+
     _ui->MessageDisplayListWidget->setWordWrap(true);
     _ui->MessageDisplayListWidget->setAlternatingRowColors(true);
     // _ui->MessageDisplayListWidget->setAutoScroll(false);
     _ui->MessageDisplayListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     _ui->MessageDisplayListWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     _ui->modelLabel->setText("");
     _ui->modelLabel->setStyleSheet("font-weight: bold;");
-    // _ui->ModelListWidgets->setH
+
     _ui->PromptEditor->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    // _ui->SendPromptButton->setFixedSize(_ui->SendPromptButton->size());
+    // _ui->closeConversationButton->setFixedSize(_ui->closeConversationButton->size());
+    // _ui->NewConversationButton->setFixedSize(_ui->NewConversationButton->size());
+    
     connect(_ui->SendPromptButton, &QPushButton::clicked,
         this, [this]{ Chat::send_prompt(); });
     connect(_ui->closeConversationButton, &QPushButton::clicked, 
@@ -32,12 +40,12 @@ Chat::~Chat() {
     qDebug() << "----- DESTROY";
 }
 
-
 void Chat::send_prompt()
 {
     QString prompt = (_ui->PromptEditor->toPlainText());
-    _ui->MessageDisplayListWidget->addItem("You\n" + prompt);
-    _ui->MessageDisplayListWidget->item(_ui->MessageDisplayListWidget->count() -1)->setTextAlignment(Qt::AlignRight);
+
+    add_message_item(MessageWidget::Role::FromUser, "You", prompt);
+
     _qas.push_back(prompt);
     _ui->PromptEditor->setPlainText("");
     _ui->SendPromptButton->setEnabled(false);
@@ -70,7 +78,9 @@ void Chat::send_prompt()
                 //     }
                 // }
                 auto name_parts = _model.split(u':');
-                _ui->MessageDisplayListWidget->addItem(name_parts[0] + "\n" + model_answer);
+                // _ui->MessageDisplayListWidget->addItem(name_parts[0] + "\n" + model_answer);
+                add_message_item(MessageWidget::Role::FromModel, name_parts[0], model_answer);
+
                 _qas.push_back(model_answer);
                 if (_qas.size() % 6 == 0) {
                     get_title();
@@ -124,4 +134,46 @@ void Chat::get_title() {
         reply->deleteLater();
     });
     // wait for model to answer and then reset the button
+}
+
+void Chat::add_message_item(MessageWidget::Role role, QString sender, QString content) {
+    QListWidgetItem *msg_item = new QListWidgetItem();
+    MessageWidget *msg_widget = new MessageWidget(role, sender, content, this);
+    msg_item->setSizeHint((msg_widget->minimumSizeHint()));
+    _ui->MessageDisplayListWidget->addItem(msg_item);
+    _ui->MessageDisplayListWidget->setItemWidget(msg_item, msg_widget);
+}
+
+
+Chat::MessageWidget::MessageWidget(MessageWidget::Role role, QString sender, QString content, QWidget *parent) 
+    :  QWidget(parent)
+{
+    Qt::Alignment alignment = (role == MessageWidget::FromUser) ? Qt::AlignRight : Qt::AlignLeft;
+    Qt::LayoutDirection direction = (role == MessageWidget::FromUser) ? Qt::RightToLeft : Qt::LeftToRight;
+    QString color = (role == MessageWidget::FromModel) ? "#AC9BEF" : "#7DC8B1";
+
+    QLabel *senderLabel = new QLabel(this);
+    senderLabel->setText(sender);
+    senderLabel->setAlignment(alignment);
+    senderLabel->setLayoutDirection(direction);
+    senderLabel->setStyleSheet("color:" + color + "; margin-bottmo 5px; margin-top: 5px;");
+    senderLabel->setWordWrap(true);
+
+    QFont font_sender = senderLabel->font();
+    font_sender.setBold(true);
+    senderLabel->setFont(font_sender);
+
+    QLabel *contentLabel = new QLabel(this);
+    contentLabel->setText(content);
+    contentLabel->setAlignment(alignment);
+    contentLabel->setLayoutDirection(direction);
+    contentLabel->setStyleSheet(" color: #d0d0d0;");
+    contentLabel->setWordWrap(true);
+
+    QGridLayout *layout = new QGridLayout(this);
+    layout->addWidget(senderLabel, 0, 0);
+    layout->addWidget(contentLabel, 1, 0);
+    layout->setRowStretch(0, 0);
+    layout->setRowStretch(1, 1);
+    this->setLayout(layout);
 }

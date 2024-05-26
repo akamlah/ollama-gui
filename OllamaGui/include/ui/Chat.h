@@ -11,7 +11,10 @@
 #include <QJsonArray>
 #include <QRestReply>
 #include <QNetworkAccessManager>
-#include <Api.h>
+#include <api/Api.h>
+
+#include <QGridLayout>
+#include <QtGui>
 
 namespace Ui {
     class Chat;
@@ -20,6 +23,19 @@ namespace Ui {
 class Chat: public QWidget
 {
     Q_OBJECT
+
+public:
+    class MessageWidget: public QWidget {
+    public:
+        typedef enum role {
+            FromUser,
+            FromModel
+        } Role ;
+    public:
+        MessageWidget(Role role, QString sender, QString content, QWidget *parent = nullptr);
+        ~MessageWidget();
+    };
+
 
 public:
 
@@ -35,12 +51,17 @@ private:
     QNetworkAccessManager *_network_manager;
 
     void get_title();
+    void add_message_item(MessageWidget::Role role, QString sender, QString content);
 
 private slots:
     void send_prompt();
+    // void createMessageWidget(QWidget *widget, QString sender, QString content);
 
 signals:
     void close_conversation_request_signal();
+
+
+
 
 };
 

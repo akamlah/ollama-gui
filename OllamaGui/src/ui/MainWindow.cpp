@@ -26,6 +26,10 @@ MainWindow::MainWindow(QMainWindow *parent)
     _tabWidget = new QTabWidget(central_widget);
 
     _nav_button = new QPushButton(central_widget);
+    // _nav_button->setFixedSize(_nav_button->size());
+    // _nav_button->setMinimumWidth(Qt::MinimumSize);
+
+    layout->addWidget(_nav_button, 0, 0, Qt::AlignRight);
     _nav_button->hide();
     connect(_nav_button, &QPushButton::clicked, this, [this](){
         if (_stackedWidget->currentIndex() == 0) {
@@ -43,7 +47,6 @@ MainWindow::MainWindow(QMainWindow *parent)
     _stackedWidget->addWidget(_tabWidget);
     _stackedWidget->setCurrentIndex(0);
 
-    layout->addWidget(_nav_button, 0, 0);
     layout->addWidget(_stackedWidget, 1, 0);
 
     QObject::connect(

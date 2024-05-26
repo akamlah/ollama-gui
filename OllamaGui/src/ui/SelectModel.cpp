@@ -1,6 +1,6 @@
 #include <ui/SelectModel.h>
 #include "./ui_selectmodel.h"
-#include <Api.h>
+#include <api/Api.h>
 
 SelectModel::SelectModel(QWidget *parent) 
     : QWidget(parent)
@@ -15,6 +15,9 @@ SelectModel::SelectModel(QWidget *parent)
         Api::Endpoints::get_endpoints()->get_base_url().toString() );
     _ui->urlLabel->setWordWrap(true);
     _ui->currentlyLoadedLabel->setStyleSheet("font-weight: bold;");
+
+    // _ui->ChangeUrlButton->setFixedSize(_ui->ChangeUrlButton->size());
+    // _ui->refreshButton->setFixedSize(_ui->refreshButton->size());
 
     fetch_tags();
     

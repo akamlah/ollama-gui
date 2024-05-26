@@ -7,13 +7,21 @@ QPushButton {
     border: 2px solid #333333;
     border-radius: 6px;
     top: 2px; left: 2px;
-    color: #afafaf;
+    color: #d0d0d0;
     padding: 2px;
     margin: 2px;
 }
 
 QPushButton::hover {
-    background-color: #352B57;
+    background-color: #7058c0;
+    color: #ffffff;
+}
+
+QPushButton[objectName^="SendPromptButton"] {
+    border: none;
+}
+QPushButton[objectName^="SendPromptButton"]::hover {
+    background-color: #2f725e;
 }
 
 QPushButton::disabled {
@@ -28,7 +36,7 @@ QLabel {
 
 QListWidget {
     background-color: #171717;
-    color: #afafaf;
+    color: #d0d0d0;
 }
 
 QListWidget[objectName^="modelsList"] {
@@ -38,7 +46,7 @@ QListWidget[objectName^="modelsList"]::item {
     padding: 10px;
 }
 QListWidget::item[objectName^="modelsList"]::hover, QListWidget[objectName^="modelsList"]::item::selected  {
-    background-color: #352B57;
+    background-color: #534091;
 }
 
 
@@ -46,16 +54,11 @@ QListWidget[objectName^="MessageDisplayListWidget"]  {
     background-color: #202020;
     alternate-background-color: #252525;
     border: none;
-    color: #afafaf;
+    color: #d0d0d0;
 }
-QListWidget[objectName^="MessageDisplayListWidget"]::item {
-    padding: 10px;
-}
-
 
 QGroupBox {
-    border: 2px solid #252525;
-    /* padding: 10px; */
+    border: 2px solid #303030;
 }
 
 QDialog {
@@ -64,31 +67,31 @@ QDialog {
 
 QPlainTextEdit {
     background-color: #171717;
-    color: #a1a1a1;
-
+    color: #d0d0d0;
+    padding: 10px;
 }
 
-QTabWidget::page {
+/* QTabWidget::page {
     background-color: #101010;
 
-}
+} */
 
 QTabWidget::pane {
-    border-top: 2px solid #352B57;
+    border-top: 1px solid #4d3b88;
 
 }
 
 QTabBar::tab {
     background: #303030;
-    color: #afafaf;
+    color: #dfdfdf;
     font: bold;
-    border-top-left-radius: 1px;
-    border-top-right-radius: 1px;
+    border-top-left-radius: 1.5px;
+    border-top-right-radius: 1.5px;
     padding: 10px;
     min-width: 8ex;
 }
 
 QTabBar::tab:selected, QTabBar::tab:hover {
-    background: #352B57;
+    background: #4d3b88;
 
 }
