@@ -15,6 +15,7 @@
 
 #include <QGridLayout>
 #include <QtGui>
+#include <QLabel>
 
 namespace Ui {
     class Chat;
@@ -34,6 +35,8 @@ public:
     public:
         MessageWidget(Role role, QString sender, QString content, QWidget *parent = nullptr);
         ~MessageWidget();
+        QLabel *_contentLabel;
+
     };
 
 
