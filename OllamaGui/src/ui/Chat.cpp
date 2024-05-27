@@ -1,18 +1,20 @@
 #include <ui/Chat.h>
 #include "./ui_chat.h"
+#include <ui/Dialog.h>
 
 // Chat::MessageWidget::~MessageWidget() {}
 
 
 
 Chat::Chat(QString model, QWidget *parent) 
-    : _model(model)
+    : _model_tag(model)
     ,  QWidget(parent)
     , _parent(parent) 
     , _ui(new Ui::Chat)
     , _network_manager(new QNetworkAccessManager(this))
 {
     _ui->setupUi(this);
+    parse_tag();
 
     _doc = new QTextDocument(this);
     _ui->MessageDisplay->setDocument(_doc);
@@ -29,14 +31,14 @@ Chat::Chat(QString model, QWidget *parent)
     // _ui->NewConversationButton->setFixedSize(_ui->NewConversationButton->size());
     
     connect(_ui->SendPromptButton, &QPushButton::clicked,
-        this, [this]{ Chat::send_prompt(); });
+        this, [this]{ Chat::send_prompt_slot(); });
 
     // QKeySequence seq(Qt::SHIFT | Qt::Key_Enter);
     // QShortcut *shrt = new QShortcut(seq, _ui->PromptEditor);
 
     QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+S"), _ui->PromptEditor);
     connect(shortcut, SIGNAL(activated()),
-        this, SLOT(send_prompt()));
+        this, SLOT(send_prompt_slot()));
 
 
     // QAction *action = new QAction("SendPromptKeyAction");
@@ -46,13 +48,18 @@ Chat::Chat(QString model, QWidget *parent)
     // QShortcut *sC = new QShortcut(QKeySequence(Qt::Key_Shift + Qt::Key_Enter), this);
     // connect(sC, &QShortcut::activated, this, [this]{ Chat::send_prompt(); });
 
-    connect(_ui->DisconnectButton, &QPushButton::clicked, 
-        this, [this](){
-            emit close_conversation_request_signal();
-        });
+    // connect(_ui->DisconnectButton, &QPushButton::clicked, 
+    //     this, [this](){
+    //         emit close_conversation_request_signal();
+    //     });
 
+    connect(_ui->DisconnectButton, &QPushButton::clicked, 
+        this, &Chat::confirm_disconnect_slot);
+
+    // do this better
     _conversations.push_back("conv 1");
-    _ui->ConversationsListWidget->addItem("Conv " +  QString::fromUtf8(std::to_string(_conversations.size()).c_str()));
+    _ui->ConversationsListWidget->addItem("Conv " 
+        +  QString::fromUtf8(std::to_string(_conversations.size()).c_str()));
     
     load_model();
 }
@@ -60,6 +67,34 @@ Chat::Chat(QString model, QWidget *parent)
 Chat::~Chat() {
     qDebug() << "----- DESTROY";
     delete _ui;
+}
+
+void Chat::parse_tag() {
+    if (_model_tag.isEmpty() || _model_tag.isNull())
+        _model_tag = "Model";
+    auto split_tag = _model_tag.split(u':');
+    if (split_tag.length() > 0 && !split_tag[0].isEmpty() && !split_tag[0].isNull())
+        _model_name = split_tag[0];
+    else
+        _model_name = _model_tag;
+}
+
+/// @brief Asks to confirm disconnect from model
+void Chat::confirm_disconnect_slot() {
+    QString message = "Confirm disconnection from " + _model_name + " (" 
+        + _model_tag + ")?" + "\n" + "All cached conversation will be lost";
+    Dialog * dialog = new Dialog(message, this);
+    // dialog->setMinimumSize(_parent->minimumSize());
+    connect(dialog, &Dialog::confirmed_signal, this, [this, dialog]() {
+        dialog->close();
+        emit close_conversation_request_signal();
+        dialog->deleteLater();
+    });
+    connect(dialog, &Dialog::cancelled_signal, this, [this, dialog]() {
+        dialog->close();
+        dialog->deleteLater();
+    });
+    dialog->show();
 }
 
 void Chat::wrap_set_enabled_send_button(bool setEnabled) {
@@ -82,7 +117,7 @@ void Chat::load_model() {
     request.setUrl(Api::Endpoints::get_endpoints()->api_urls_post.generate_url);
 
     QJsonObject obj;
-    obj.insert("model", QJsonValue::fromVariant(_model));
+    obj.insert("model", QJsonValue::fromVariant(_model_tag));
     obj.insert("prompt", QJsonValue::fromVariant(""));
     obj.insert("stream", QJsonValue::fromVariant(false));
     QJsonDocument doc(obj);
@@ -98,7 +133,7 @@ void Chat::load_model() {
     });
 }
 
-void Chat::send_prompt()
+void Chat::send_prompt_slot()
 {
     if (_ui->SendPromptButton->isEnabled() == false) {
         return;
@@ -127,7 +162,7 @@ void Chat::send_prompt()
     request.setUrl(Api::Endpoints::get_endpoints()->api_urls_post.generate_url);
 
     QJsonObject obj;
-    obj.insert("model", QJsonValue::fromVariant(_model));
+    obj.insert("model", QJsonValue::fromVariant(_model_tag));
     obj.insert("prompt", QJsonValue::fromVariant(prompt));
     // obj.insert("stream", QJsonValue::fromVariant(false));
 
@@ -137,10 +172,8 @@ void Chat::send_prompt()
     
     QNetworkReply *reply = _network_manager->post(request, data);
 
-    auto name_parts = _model.split(u':');
-    _cursor->insertText(name_parts[0]);
+    _cursor->insertText(_model_name);
     _cursor->insertText("\r\n");
-
 
     QObject::connect(reply, &QNetworkReply::readyRead, this, [reply, this]() {
         while(reply->bytesAvailable()) {
@@ -169,7 +202,7 @@ void Chat::get_title() {
     request.setUrl(Api::Endpoints::get_endpoints()->api_urls_post.generate_url);
 
     QJsonObject obj;
-    obj.insert("model", QJsonValue::fromVariant(_model));
+    obj.insert("model", QJsonValue::fromVariant(_model_tag));
     obj.insert("prompt", QJsonValue::fromVariant(prompt));
     obj.insert("stream", QJsonValue::fromVariant(false));
 

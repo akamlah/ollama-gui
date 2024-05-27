@@ -1,7 +1,7 @@
 #include <ui/MainWindow.h>
 #include <ui/SelectModel.h>
 #include <ui/Chat.h>
-// #include <Api.h>
+#include <api/Api.h>
 
 MainWindow::MainWindow(QMainWindow *parent) 
     : QMainWindow(parent)
@@ -25,11 +25,31 @@ MainWindow::MainWindow(QMainWindow *parent)
     _stackedWidget = new QStackedWidget(central_widget);
     _tabWidget = new QTabWidget(central_widget);
 
+
+    QHBoxLayout *header_layout = new QHBoxLayout(central_widget);
+    QLabel *url_label = new QLabel(central_widget);
+    url_label->setText( "Currentnly connected to ollama server instance at: " +
+        Api::Endpoints::get_endpoints()->get_base_url().toString() );
+    url_label->setWordWrap(true);
+    header_layout->addWidget(url_label, 0);
+    // layout->addWidget(url_label, 0, 0);
+
+    QPushButton *settings_btn = new QPushButton(central_widget);
+    settings_btn->setText("Settings");
+    header_layout->addWidget(settings_btn, 1, Qt::AlignRight);
+    // layout->addWidget(settings_btn, 0, 1);
+    header_layout->setStretch(0, 3);
+    header_layout->setStretch(1, 1);
+    layout->addLayout(header_layout, 0, 0);
+    
+
+
+    
     _nav_button = new QPushButton(central_widget);
     // _nav_button->setFixedSize(_nav_button->size());
     // _nav_button->setMinimumWidth(Qt::MinimumSize);
 
-    layout->addWidget(_nav_button, 0, 0, Qt::AlignRight);
+    layout->addWidget(_nav_button, 1, 0, Qt::AlignRight);
     _nav_button->hide();
     connect(_nav_button, &QPushButton::clicked, this, [this](){
         if (_stackedWidget->currentIndex() == 0) {
@@ -47,7 +67,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     _stackedWidget->addWidget(_tabWidget);
     _stackedWidget->setCurrentIndex(0);
 
-    layout->addWidget(_stackedWidget, 1, 0);
+    layout->addWidget(_stackedWidget, 2, 0);
 
     QObject::connect(
         select_model, 

@@ -41,9 +41,6 @@ public:
 
     // };
 
-
-
-
 public:
 
     Chat(QString model, QWidget *parent = nullptr);
@@ -52,7 +49,8 @@ public:
 private:
     QWidget *_parent;
     Ui::Chat *_ui;
-    QString _model;
+    QString _model_tag;
+    QString _model_name;
     std::vector<QString> _conversations;
     std::vector<QString> _qas;
     QNetworkAccessManager *_network_manager;
@@ -60,14 +58,16 @@ private:
     QTextDocument *_doc;
     QTextCursor* _cursor;
 
-    void get_title();
+    void parse_tag();
     void load_model();
     void wrap_set_enabled_send_button(bool setEnabled);
+    void get_title();
 
     // void add_message_item(MessageWidget::Role role, QString sender, QString content);
 
 private slots:
-    void send_prompt();
+    void send_prompt_slot();
+    void confirm_disconnect_slot();
     // void createMessageWidget(QWidget *widget, QString sender, QString content);
 
 signals:

@@ -13,9 +13,9 @@ SelectModel::SelectModel(QWidget *parent)
     _ui->setupUi(this);
 
     //later: "updateLabel signal with "setText" on url change
-    _ui->urlLabel->setText( "Currentnly connected to ollama server instance at: " +
-        Api::Endpoints::get_endpoints()->get_base_url().toString() );
-    _ui->urlLabel->setWordWrap(true);
+    // _ui->urlLabel->setText( "Currentnly connected to ollama server instance at: " +
+    //     Api::Endpoints::get_endpoints()->get_base_url().toString() );
+    // _ui->urlLabel->setWordWrap(true);
     _ui->currentlyLoadedLabel->setStyleSheet("font-weight: bold;");
 
     // _ui->ChangeUrlButton->setFixedSize(_ui->ChangeUrlButton->size());
