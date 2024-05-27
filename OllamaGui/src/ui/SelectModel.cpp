@@ -3,6 +3,7 @@
 #include <api/Api.h>
 #include <ui/Dialog.h>
 
+// constructor
 SelectModel::SelectModel(QWidget *parent) 
     : QWidget(parent)
     , _parent(parent)
@@ -20,8 +21,11 @@ SelectModel::SelectModel(QWidget *parent)
     // _ui->ChangeUrlButton->setFixedSize(_ui->ChangeUrlButton->size());
     // _ui->refreshButton->setFixedSize(_ui->refreshButton->size());
 
+
+    // [ ! ] Add management of case server not responding at first api call
     fetch_tags();
-    
+
+    // connect slots and signals
     QObject::connect( _ui->modelsList, &QListWidget::itemDoubleClicked,
         this, [this] { SelectModel::model_was_double_clicked_slot(); } );
     QObject::connect( this, &SelectModel::model_was_confirmed_signal,
@@ -30,38 +34,35 @@ SelectModel::SelectModel(QWidget *parent)
         this, &SelectModel::fetch_tags );
 }
 
+// destructor
 SelectModel::~SelectModel() { delete _ui; }
 
+/// @brief Creates a new dialog that asks to confirm to run the model selected
 void SelectModel::model_was_double_clicked_slot() {
-
     auto model_selected = _ui->modelsList->selectedItems();
     int index = _ui->modelsList->row(model_selected[0]);
     QString model_name = _model_list.at(index);
     QString message = "Load " + model_name + " ?";
-
-    Dialog * dialog = new Dialog(message);
-    // dialog->setMinimumSize(this->minimumSize());
+    Dialog * dialog = new Dialog(message, this);
     // dialog->setMinimumSize(_parent->minimumSize());
-
     connect(dialog, &Dialog::confirmed_signal, this, [this, dialog, model_name]() {
         dialog->close();
         emit model_was_confirmed_signal(model_name);
         dialog->deleteLater();
     });
-
     connect(dialog, &Dialog::cancelled_signal, this, [this, dialog]() {
         dialog->close();
         dialog->deleteLater();
     });
-
     dialog->show();
 }
 
-
+// Slot
 void SelectModel::model_was_selected_slot(QString model_name) {
     emit model_was_selected_signal(model_name);
 }
 
+// private helper function
 void SelectModel::display_tags() {
     if (_model_list.empty())
         return ;
@@ -70,6 +71,7 @@ void SelectModel::display_tags() {
         _ui->modelsList->addItem(tag);
 }
 
+// slot
 void SelectModel::fetch_tags() {
     _model_list.clear();
     QNetworkRequest request;

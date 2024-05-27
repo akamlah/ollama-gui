@@ -43,6 +43,7 @@ private:
     QNetworkAccessManager *_network_manager;
     std::vector<QString> _model_list;
     QWidget *_parent;
+
     void display_tags();
 
 };

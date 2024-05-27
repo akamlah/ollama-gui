@@ -19,7 +19,7 @@ class Dialog: public QDialog
 public:
 
     explicit Dialog(QString message, QWidget *parent = nullptr);
-    virtual ~Dialog();
+    ~Dialog();
 
 signals:
     void confirmed_signal();

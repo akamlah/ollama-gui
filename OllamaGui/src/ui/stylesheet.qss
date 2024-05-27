@@ -17,12 +17,21 @@ QPushButton::hover {
     background-color: #7058c0;
     color: #ffffff;
 }
+QPushButton[objectName^="CancelButton"]::hover {
+    background-color: #9e346e;
+    color: #ffffff;
+}
+QPushButton[objectName^="OKButton"]::hover {
+    background-color: #2f725e;
+    color: #ffffff;
+}
 
 QPushButton[objectName^="SendPromptButton"] {
     border: none;
 }
 QPushButton[objectName^="SendPromptButton"]::hover {
     background-color: #2f725e;
+   color: #ffffff;
 }
 
 QPushButton::disabled {
