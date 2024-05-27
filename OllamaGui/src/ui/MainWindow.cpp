@@ -46,11 +46,16 @@ MainWindow::MainWindow(QMainWindow *parent)
     layout->addLayout(header_layout, 0, 0);
     
     int default_font_size = this->fontInfo().pixelSize();
-    _font_size = default_font_size;
+    if (default_font_size > 4 && default_font_size < 40) {
+        _font_size = default_font_size;
+    }
+    else {
+        _font_size = 13;
+    }
     QShortcut *shortcut_plus = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_Plus), this);
     connect(shortcut_plus, &QShortcut::activated,
         this, [this](){
-            if (_font_size < 30) {
+            if (_font_size < 40) {
                 _font_size ++;
                 QString size_str = QString::number(_font_size);
                 QWidget::setStyleSheet("font-size:" + size_str + "px;");

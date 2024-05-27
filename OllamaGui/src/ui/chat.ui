@@ -48,18 +48,20 @@
                                     <item>
                                         <widget class="QCheckBox" name="CheckBoxStream">
                                             <property name="text">
-                                                <string>Stream</string>
+                                                <string>Word Stream</string>
                                             </property>
                                         </widget>                                    
                                     </item>
-                                    <item>
+
+                                    <!-- <item>
                                         <widget class="QCheckBox" name="CheckBoxDetails">
                                             <property name="text">
-                                                <string>Show response details</string>
+                                                <string>Append response details</string>
                                             </property>
                                         </widget>                                    
-                                    </item>
-                                    <item>
+                                    </item> -->
+
+                                    <!-- <item>
                                         <layout class="QHBoxLayout" name="horizontalLayout_9879" stretch="1, 1, 4, 4">
                                             <item>
                                                 <widget class="QPushButton" name="KeepAlivePlus">
@@ -92,7 +94,7 @@
                                             </item>
 
                                         </layout>
-                                    </item>
+                                    </item> -->
 
                                 </layout>
                             </widget>
@@ -107,13 +109,13 @@
                                     <item>
                                         <widget class="QListWidget" name="ConversationsListWidget"/>
                                     </item>
-                                    <item>
+                                    <!-- <item>
                                         <widget class="QPushButton" name="NewConversationButton">
                                             <property name="text">
                                                 <string>New</string>
                                             </property>
                                         </widget>
-                                    </item>
+                                    </item> -->
                                 </layout>
                             </widget>
                         </item>

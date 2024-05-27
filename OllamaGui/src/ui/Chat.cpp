@@ -16,6 +16,8 @@ Chat::Chat(QString model, QWidget *parent)
     _ui->MessageDisplay->setDocument(_doc);
     _ui->MessageDisplay->setReadOnly(true);
     _ui->PromptEditor->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    _ui->CheckBoxStream->setChecked(true);
+    _options.StreamEnabled = true;
 
     connect(_ui->SendPromptButton, &QPushButton::clicked,
         this, [this]{ Chat::send_prompt_slot(); });
@@ -35,6 +37,12 @@ Chat::Chat(QString model, QWidget *parent)
         +  QString::fromUtf8(std::to_string(_conversations.size()).c_str()));
     
     load_model();
+
+    connect(_ui->CheckBoxStream, &QCheckBox::checkStateChanged, this, 
+        [this]() {
+            _options.StreamEnabled = (_ui->CheckBoxStream->isChecked()) ? true : false;
+        }
+    );
 }
 
 Chat::~Chat() {
@@ -137,7 +145,8 @@ void Chat::send_prompt_slot()
     QJsonObject obj;
     obj.insert("model", QJsonValue::fromVariant(_model_tag));
     obj.insert("prompt", QJsonValue::fromVariant(prompt));
-    // obj.insert("stream", QJsonValue::fromVariant(false));
+    if (!_options.StreamEnabled)
+        obj.insert("stream", QJsonValue::fromVariant(false));
 
     QJsonDocument doc(obj);
     QByteArray data = doc.toJson();

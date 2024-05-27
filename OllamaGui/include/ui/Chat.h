@@ -27,6 +27,13 @@ class Chat: public QWidget
 {
     Q_OBJECT
 
+private:
+
+    typedef struct Options {
+        bool StreamEnabled = false;
+        bool AddDetails = false;
+    } options;
+
 public:
     // class MessageWidget: public QWidget {
     // public:
@@ -56,6 +63,8 @@ private:
     QNetworkAccessManager *_network_manager;
     // other
     QString _model_name;
+    options _options;
+
     std::vector<QString> _qas;
     std::vector<QString> _conversations;
 
