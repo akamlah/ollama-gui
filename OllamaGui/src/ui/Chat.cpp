@@ -2,57 +2,30 @@
 #include "./ui_chat.h"
 #include <ui/Dialog.h>
 
-// Chat::MessageWidget::~MessageWidget() {}
-
-
-
 Chat::Chat(QString model, QWidget *parent) 
-    : _model_tag(model)
-    ,  QWidget(parent)
+    :  QWidget(parent)
     , _parent(parent) 
     , _ui(new Ui::Chat)
+    , _model_tag(model)
+    , _doc(new QTextDocument(this))
+    , _cursor(_cursor = new QTextCursor(_doc))
     , _network_manager(new QNetworkAccessManager(this))
 {
     _ui->setupUi(this);
     parse_tag();
-
-    _doc = new QTextDocument(this);
     _ui->MessageDisplay->setDocument(_doc);
     _ui->MessageDisplay->setReadOnly(true);
-    _cursor = new QTextCursor(_doc);
-
-    // _ui->modelLabel->setText("");
-    // _ui->modelLabel->setStyleSheet("font-weight: bold;");
-
     _ui->PromptEditor->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
-    // _ui->SendPromptButton->setFixedSize(_ui->SendPromptButton->size());
-    // _ui->DisconnectButton->setFixedSize(_ui->DisconnectButton->size());
-    // _ui->NewConversationButton->setFixedSize(_ui->NewConversationButton->size());
-    
     connect(_ui->SendPromptButton, &QPushButton::clicked,
         this, [this]{ Chat::send_prompt_slot(); });
 
-    // QKeySequence seq(Qt::SHIFT | Qt::Key_Enter);
-    // QShortcut *shrt = new QShortcut(seq, _ui->PromptEditor);
-
-    QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+S"), _ui->PromptEditor);
+    QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+S")
+        , _ui->PromptEditor);
     connect(shortcut, SIGNAL(activated()),
         this, SLOT(send_prompt_slot()));
 
-
-    // QAction *action = new QAction("SendPromptKeyAction");
-    // _ui->SendPromptButton->addAction(action);
-    // action->setShortcut(Qt::SHIFT | Qt::Key_Enter);
-
-    // QShortcut *sC = new QShortcut(QKeySequence(Qt::Key_Shift + Qt::Key_Enter), this);
-    // connect(sC, &QShortcut::activated, this, [this]{ Chat::send_prompt(); });
-
-    // connect(_ui->DisconnectButton, &QPushButton::clicked, 
-    //     this, [this](){
-    //         emit close_conversation_request_signal();
-    //     });
-
+    // [ ! ] make also ollama actually unload the model from ram
     connect(_ui->DisconnectButton, &QPushButton::clicked, 
         this, &Chat::confirm_disconnect_slot);
 

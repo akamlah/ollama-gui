@@ -17,25 +17,6 @@
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
-<!-- 
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_34" stretch="3,1">
-       <item>
-        <widget class="QLabel" name="urlLabel">
-         <property name="text">
-          <string></string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="ChangeUrlButton">
-         <property name="text">
-          <string>Change server url</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item> -->
 
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,1">

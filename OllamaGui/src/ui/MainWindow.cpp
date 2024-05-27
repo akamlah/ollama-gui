@@ -8,8 +8,10 @@ MainWindow::MainWindow(QMainWindow *parent)
     // , _stackedWidget(new QStackedWidget(this))
     // , _tabWidget(new QTabWidget(this))
 {
+    // [ ! ] Handle connection test and server not running case
     // QProcess ollama_run;
     // ollama_run.start("ollama");
+
     QFile file("/home/dom/alice/qt/ollama_gui/OllamaGui/src/ui/stylesheet.qss");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
@@ -26,8 +28,9 @@ MainWindow::MainWindow(QMainWindow *parent)
     _tabWidget = new QTabWidget(central_widget);
 
 
-    QHBoxLayout *header_layout = new QHBoxLayout(central_widget);
+    QHBoxLayout *header_layout = new QHBoxLayout();
     QLabel *url_label = new QLabel(central_widget);
+    url_label->setObjectName("UrlInstancelabel");
     url_label->setText( "Currentnly connected to ollama server instance at: " +
         Api::Endpoints::get_endpoints()->get_base_url().toString() );
     url_label->setWordWrap(true);
@@ -42,10 +45,29 @@ MainWindow::MainWindow(QMainWindow *parent)
     header_layout->setStretch(1, 1);
     layout->addLayout(header_layout, 0, 0);
     
-
-
+    int default_font_size = this->fontInfo().pixelSize();
+    _font_size = default_font_size;
+    QShortcut *shortcut_plus = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_Plus), this);
+    connect(shortcut_plus, &QShortcut::activated,
+        this, [this](){
+            if (_font_size < 30) {
+                _font_size ++;
+                QString size_str = QString::number(_font_size);
+                QWidget::setStyleSheet("font-size:" + size_str + "px;");
+            }
+    });
+    QShortcut *shortcut_minus = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_Minus), this);
+    connect(shortcut_minus, &QShortcut::activated,
+        this, [this](){
+            if (_font_size > 4) {
+                _font_size --;
+                QString size_str = QString::number(_font_size);
+                QWidget::setStyleSheet("font-size:" + size_str + "px;");
+            }
+    });
     
     _nav_button = new QPushButton(central_widget);
+    _nav_button->setObjectName("NavButton");
     // _nav_button->setFixedSize(_nav_button->size());
     // _nav_button->setMinimumWidth(Qt::MinimumSize);
 

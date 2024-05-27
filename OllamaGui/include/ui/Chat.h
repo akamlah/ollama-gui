@@ -47,16 +47,17 @@ public:
     ~Chat();
 
 private:
+    // initializer list
     QWidget *_parent;
     Ui::Chat *_ui;
     QString _model_tag;
-    QString _model_name;
-    std::vector<QString> _conversations;
-    std::vector<QString> _qas;
-    QNetworkAccessManager *_network_manager;
-
     QTextDocument *_doc;
     QTextCursor* _cursor;
+    QNetworkAccessManager *_network_manager;
+    // other
+    QString _model_name;
+    std::vector<QString> _qas;
+    std::vector<QString> _conversations;
 
     void parse_tag();
     void load_model();

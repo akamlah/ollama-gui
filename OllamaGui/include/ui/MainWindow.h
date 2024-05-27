@@ -10,6 +10,7 @@
 #include <QTabWidget>
 #include <QFile>
 
+#include <unistd.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -34,6 +35,7 @@ private:
     QStackedWidget *_stackedWidget;
     QTabWidget * _tabWidget;
     QPushButton *_nav_button;
+    int _font_size;
 };
 
 #endif // OLLAMAGUI_UI_MainWindow_H

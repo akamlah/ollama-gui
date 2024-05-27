@@ -9,6 +9,9 @@ Dialog::Dialog(QString message, QWidget *parent)
 {
     _ui->setupUi(this);
     _ui->MessageLabel->setText(message);
+
+    // [ ! ] make esc and enter aslo reject/confirm
+
     connect(_ui->OKButton, &QPushButton::clicked, this, [this]() {
         emit confirmed_signal();
     });

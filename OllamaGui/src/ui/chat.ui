@@ -16,38 +16,97 @@
 
     <layout class="QVBoxLayout" name="verticalLayout_1">
 
-        <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_27" stretch="3,1">
-                <item>
-                    <widget class="QLabel" name="TagLabel">
-                        <property name="text">
-                            <string></string>
-                        </property>
-                    </widget>
-                </item>
-                <item>
-                    <widget class="QPushButton" name="DisconnectButton">
-                        <property name="text">
-                            <string>Disconnect</string>
-                        </property>
-                    </widget>
-                </item>
-            </layout>
-        </item>
 
 
         <item>
 
-            <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,4">
+            <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,6">
 
                 <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_2" stretch="5,3">
+                    <layout class="QVBoxLayout" name="verticalLayout_2">
+                        <item>
+
+                            <widget class="QPushButton" name="DisconnectButton">
+                                <property name="text">
+                                    <string>Disconnect</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QGroupBox" name="SettingssGroup">
+                                <property name="title">
+                                    <string>Options</string>
+                                </property>
+                                <layout class="QVBoxLayout" name="verticalLayout_276788">
+                                    <!-- <item>
+                                        <widget class="QLabel" name="OptionsLabel">
+                                            <property name="text">
+                                                <string>Options</string>
+                                            </property>
+                                        </widget>
+                                    </item> -->
+                                    <item>
+                                        <widget class="QCheckBox" name="CheckBoxStream">
+                                            <property name="text">
+                                                <string>Stream</string>
+                                            </property>
+                                        </widget>                                    
+                                    </item>
+                                    <item>
+                                        <widget class="QCheckBox" name="CheckBoxDetails">
+                                            <property name="text">
+                                                <string>Show response details</string>
+                                            </property>
+                                        </widget>                                    
+                                    </item>
+                                    <item>
+                                        <layout class="QHBoxLayout" name="horizontalLayout_9879" stretch="1, 1, 4, 4">
+                                            <item>
+                                                <widget class="QPushButton" name="KeepAlivePlus">
+                                                    <property name="text">
+                                                        <string>+</string>
+                                                    </property>
+                                                </widget>                         
+                                            </item>
+                                            <item>
+                                                <widget class="QPushButton" name="KeepAliveMinus">
+                                                    <property name="text">
+                                                        <string>-</string>
+                                                    </property>
+                                                </widget>                                 
+                                            </item>
+
+                                            <item>
+                                                <widget class="QLabel" name="TimeoutLabel">
+                                                    <property name="text">
+                                                        <string>Timeout [m]:</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item>
+                                                <widget class="QLabel" name="TimeoutValueLabel">
+                                                    <property name="text">
+                                                        <string>5</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+
+                                        </layout>
+                                    </item>
+
+                                </layout>
+                            </widget>
+                        </item>
+
                         <item>
                             <widget class="QGroupBox" name="ConversationsGroup">
-                                <!-- <property name="title">
+                                <property name="title">
                                     <string>Conversations</string>
-                                </property> -->
+                                </property>
                                 <layout class="QVBoxLayout" name="verticalLayout_278" stretch="1,6">
+                                    <item>
+                                        <widget class="QListWidget" name="ConversationsListWidget"/>
+                                    </item>
                                     <item>
                                         <widget class="QPushButton" name="NewConversationButton">
                                             <property name="text">
@@ -55,12 +114,10 @@
                                             </property>
                                         </widget>
                                     </item>
-                                    <item>
-                                        <widget class="QListWidget" name="ConversationsListWidget"/>
-                                    </item>
                                 </layout>
                             </widget>
                         </item>
+
 
                     </layout>
                 </item>
@@ -78,7 +135,7 @@
                             <item>
                                 <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="5,1">
                                     <item>
-                                        <widget class="QLabel" name="label">
+                                        <widget class="QLabel" name="ShortctuLabel">
                                             <property name="text">
                                                 <string>[Ctrl + S] to send</string>
                                             </property>
@@ -99,6 +156,7 @@
                         </layout>
                     </widget>
                 </item>
+                
             </layout>
         </item>
         
