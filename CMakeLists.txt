@@ -31,9 +31,9 @@ set(HEADERS ${UI_HEADERS} ${API_HEADERS})
 
 qt_add_executable(ollamagui
     MANUAL_FINALIZATION
+    ${UI_QML}
     ${HEADERS}
     ${SOURCES}
-    ${UI_QML}
 )
 
 # include sources

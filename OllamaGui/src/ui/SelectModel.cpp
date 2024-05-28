@@ -1,7 +1,9 @@
 #include <ui/SelectModel.h>
 #include "./ui_selectmodel.h"
 #include <api/Api.h>
+#include <ui/Dialog.h>
 
+// constructor
 SelectModel::SelectModel(QWidget *parent) 
     : QWidget(parent)
     , _parent(parent)
@@ -9,18 +11,10 @@ SelectModel::SelectModel(QWidget *parent)
     , _network_manager(new QNetworkAccessManager(this))
 {
     _ui->setupUi(this);
-
-    //later: "updateLabel signal with "setText" on url change
-    _ui->urlLabel->setText( "Currentnly connected to ollama server instance at: " +
-        Api::Endpoints::get_endpoints()->get_base_url().toString() );
-    _ui->urlLabel->setWordWrap(true);
-    _ui->currentlyLoadedLabel->setStyleSheet("font-weight: bold;");
-
-    // _ui->ChangeUrlButton->setFixedSize(_ui->ChangeUrlButton->size());
-    // _ui->refreshButton->setFixedSize(_ui->refreshButton->size());
-
+    // [ ! ] Add management of case server not responding at first api call
     fetch_tags();
-    
+
+    // connect slots and signals
     QObject::connect( _ui->modelsList, &QListWidget::itemDoubleClicked,
         this, [this] { SelectModel::model_was_double_clicked_slot(); } );
     QObject::connect( this, &SelectModel::model_was_confirmed_signal,
@@ -29,49 +23,35 @@ SelectModel::SelectModel(QWidget *parent)
         this, &SelectModel::fetch_tags );
 }
 
-SelectModel::~SelectModel() { }
+// destructor
+SelectModel::~SelectModel() { delete _ui; }
 
+/// @brief Creates a new dialog that asks to confirm to run the model selected
 void SelectModel::model_was_double_clicked_slot() {
-    QDialog *dialog = new QDialog(this);
-    QGridLayout *layout = new QGridLayout(dialog);
-    QPushButton *confirm_btn = new QPushButton(dialog);
-    QPushButton *cancel_btn = new QPushButton(dialog);
-    QLabel *label = new QLabel(dialog);
-
     auto model_selected = _ui->modelsList->selectedItems();
     int index = _ui->modelsList->row(model_selected[0]);
     QString model_name = _model_list.at(index);
-
-    dialog->setMinimumSize(_parent->minimumSize());
-    // dialog->move(this->geometry().center() - dialog->rect().center());
-
-    label->setText("Run model " + model_name + " ?");
-    confirm_btn->setText("Confirm");
-    cancel_btn->setText("Cancel");
-    
-    layout->addWidget(label, 0, 0);
-    layout->addWidget(confirm_btn, 1, 0);
-    layout->addWidget(cancel_btn, 1, 1);
-    
-    connect(confirm_btn, &QPushButton::clicked, this, [this, dialog, model_name]() {
+    QString message = "Load " + model_name + " ?";
+    Dialog * dialog = new Dialog(message, this);
+    // dialog->setMinimumSize(_parent->minimumSize());
+    connect(dialog, &Dialog::confirmed_signal, this, [this, dialog, model_name]() {
         dialog->close();
         emit model_was_confirmed_signal(model_name);
-        delete dialog; // should dealloc children
+        dialog->deleteLater();
     });
-
-    connect(cancel_btn, &QPushButton::clicked, this, [this, dialog]() {
+    connect(dialog, &Dialog::cancelled_signal, this, [this, dialog]() {
         dialog->close();
-        delete dialog;  // should dealloc children
+        dialog->deleteLater();
     });
-
     dialog->show();
 }
 
-
+// Slot
 void SelectModel::model_was_selected_slot(QString model_name) {
     emit model_was_selected_signal(model_name);
 }
 
+// private helper function
 void SelectModel::display_tags() {
     if (_model_list.empty())
         return ;
@@ -80,6 +60,7 @@ void SelectModel::display_tags() {
         _ui->modelsList->addItem(tag);
 }
 
+// slot
 void SelectModel::fetch_tags() {
     _model_list.clear();
     QNetworkRequest request;

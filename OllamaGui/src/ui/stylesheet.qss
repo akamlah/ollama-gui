@@ -1,80 +1,203 @@
-QMainWindow {
-    background-color: #202020;
+/* -------------
+    Global
+---------------*/
+
+QWidget {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: #a1a1a1;
 }
 
+/* -------------
+    MainWindow
+---------------*/
+
+
+QMainWindow {
+    background-color: #202020;
+    /* font-size: 30px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: #a1a1a1; */
+}
+
+/* -------------
+    Buttons
+---------------*/
+
 QPushButton {
-    background-color: #303030;
-    border: 2px solid #333333;
+    background-color: #404040;
+    border: none;
     border-radius: 6px;
-    top: 2px; left: 2px;
-    color: #d0d0d0;
-    padding: 2px;
+    /* top: 2px; left: 2px; */
+    color: #dadada;
+    padding: 10px;
     margin: 2px;
 }
 
+QPushButton::disabled {
+    color: #6b6b6b;
+}
+
+/* Buttons default on hover */
 QPushButton::hover {
     background-color: #7058c0;
     color: #ffffff;
 }
 
-QPushButton[objectName^="SendPromptButton"] {
-    border: none;
-}
-QPushButton[objectName^="SendPromptButton"]::hover {
+/* Buttons that get green on hover */
+QPushButton[objectName^="OKButton"]::hover 
+, QPushButton[objectName^="SendPromptButton"]::hover
+, QPushButton[objectName^="NavButton"]::hover
+{
     background-color: #2f725e;
 }
 
-QPushButton::disabled {
-    background-color: black;
+/* Buttons that get red on hover */
+QPushButton[objectName^="CancelButton"]::hover
+, QPushButton[objectName^="DisconnectButton"]::hover
+{
+    background-color: #9e346e;
 }
 
+/* Special buttons */
+QPushButton[objectName^=KeepAlivePlus]
+, QPushButton[objectName^=KeepAliveMinus]
+{
+    padding-top: .05em;
+    padding-bottom: .05em;
+    padding-left: .2em;
+    padding-right: .2em;
+    margin: 0em;
+}
+QPushButton[objectName^=KeepAlivePlus]::hover
+, QPushButton[objectName^=KeepAliveMinus]::hover
+{
+    background-color: #949494;
+}
+
+/* -------------
+    Labels
+---------------*/
+
 QLabel {
-    color: #a1a1a1;
+    /* color: #a1a1a1; */
     padding: 2px;
 }
 
+QLabel[objectName^="currentlyLoadedLabel"] {
+    color: #dadada;
+}
+QLabel[objectName^="clickToSelectLabel"] {
+    color: #606060;
+    padding-top: 0px;
+    margin-top: 0px;
+}
+QLabel[objectName^="UrlInstancelabel"]
+, QLabel[objectName^="ShortctuLabel"]
+{
+    color: #6b6b6b;
+}
+
+/* -------------
+    checkBoxes
+---------------*/
+
+/* QCheckBox {
+    color: #a1a1a1;
+} */
+
+QCheckBox::indicator {
+    border-radius: 2px;
+    border: none;
+}
+QCheckBox::indicator::unchecked
+{
+    background-color: #404040;
+}
+
+QCheckBox::indicator::checked 
+{
+    background-color: #949494;
+    /* image: url(/home/dom/alice/qt/ollama_gui/OllamaGui/resources.qrc/images/checkmark-icon.png); */
+}
+
+
+/* -------------
+    Lists
+---------------*/
+
+/* Default */
+QListWidget {
+    background: #171717;
+    /* color: #d0d0d0; */
+}
 
 QListWidget {
-    background-color: #171717;
-    color: #d0d0d0;
-}
-
-QListWidget[objectName^="modelsList"] {
     padding: 10px;
 }
-QListWidget[objectName^="modelsList"]::item {
+QListWidget::item {
+    /* background: #171717; */
+    /* border: none; */
     padding: 10px;
 }
-QListWidget::item[objectName^="modelsList"]::hover, QListWidget[objectName^="modelsList"]::item::selected  {
-    background-color: #534091;
+QListWidget::item:hover
+, QListWidget::item:selected
+, QListWidget::item:clicked
+/* , QListWidget::item:active */
+, QListWidget::item:checked
+, QListWidget::item:focus
+, QListWidget::item:selected:hover
+{
+    background: #534091;
+    /* background: transparent; */
+    border: transparent;
+    text-transform: none;
+    text-decoration: none;
 }
 
+/* --------------
+    Text edits
+----------------*/
 
-QListWidget[objectName^="MessageDisplayListWidget"]  {
+QTextEdit[objectName^="MessageDisplay"]  {
     background-color: #202020;
-    alternate-background-color: #252525;
     border: none;
     color: #d0d0d0;
 }
 
-QGroupBox {
-    border: 2px solid #303030;
+QPlainTextEdit[objectName^="PromptEditor"] {
+    background-color: #171717;
+    color: #d0d0d0;
+    padding: 10px;
 }
+
+/* --------------
+    Group boxes
+----------------*/
+
+QGroupBox {
+    /* border: none; */
+    border: 1.5px solid #303030;
+    border-radius: 8px;
+    margin: .3em;
+    margin-top: 1.4em;
+    padding: 0.2em;
+}
+
+/* QGroupBox::title {
+    color: #a1a1a1;
+} */
+
+/* --------------
+    Dialog
+----------------*/
 
 QDialog {
     background-color: #202020;
 }
 
-QPlainTextEdit {
-    background-color: #171717;
-    color: #d0d0d0;
-    padding: 10px;
-}
-
-/* QTabWidget::page {
-    background-color: #101010;
-
-} */
+/* --------------
+    Tabs
+----------------*/
 
 QTabWidget::pane {
     border-top: 1px solid #4d3b88;
@@ -82,16 +205,15 @@ QTabWidget::pane {
 }
 
 QTabBar::tab {
-    background: #303030;
+    background: #404040;
     color: #dfdfdf;
-    font: bold;
-    border-top-left-radius: 1.5px;
-    border-top-right-radius: 1.5px;
+    /* font-weight: bold; */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 1px;
     padding: 10px;
     min-width: 8ex;
 }
 
 QTabBar::tab:selected, QTabBar::tab:hover {
     background: #4d3b88;
-
 }
