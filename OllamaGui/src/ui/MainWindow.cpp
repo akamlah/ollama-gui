@@ -12,7 +12,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     // QProcess ollama_run;
     // ollama_run.start("ollama");
 
-    QFile file("/home/dom/alice/qt/ollama_gui/OllamaGui/src/ui/stylesheet.qss");
+    QFile file(":/stylesheet.qss");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
     qApp->setStyleSheet(styleSheet);

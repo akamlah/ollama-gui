@@ -29,12 +29,18 @@ file(GLOB UI_HEADERS "${PROJECT_SOURCE_DIR}/OllamaGui/include/ui/*.h")
 set(HEADERS ${UI_HEADERS} ${API_HEADERS})
 # set(HEADERS ${UI_HEADERS})
 
+file(GLOB RESOURCE_FILE_PATH "${PROJECT_SOURCE_DIR}/OllamaGui/resources/")
+file(GLOB RESOURCE_FILE "${PROJECT_SOURCE_DIR}/OllamaGui/resources/resources.qrc")
+
 qt_add_executable(ollamagui
     MANUAL_FINALIZATION
+    ${RESOURCE_FILE}
     ${UI_QML}
     ${HEADERS}
     ${SOURCES}
 )
+
+qt6_add_resources(ollamagui recources.qrc ${RESOURCE_FILE_PATH})
 
 # include sources
 target_include_directories(ollamagui PRIVATE "${PROJECT_SOURCE_DIR}/OllamaGui/src/")
