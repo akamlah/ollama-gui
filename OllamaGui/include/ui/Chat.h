@@ -29,24 +29,20 @@ class Chat: public QWidget
 
 private:
 
-    typedef struct Options {
+    typedef struct options {
         bool StreamEnabled = false;
         bool AddDetails = false;
-    } options;
+    } Options;
 
-public:
-    // class MessageWidget: public QWidget {
-    // public:
-    //     typedef enum role {
-    //         FromUser,
-    //         FromModel
-    //     } Role ;
-    // public:
-    //     MessageWidget(Role role, QString sender, QString content, QWidget *parent = nullptr);
-    //     ~MessageWidget();
-    //     QLabel *_contentLabel;
-
-    // };
+    // rudimantal styling -> read from file later and find more elegant 
+    // html formatting like putting things in divs instead of inserting 
+    // 3 line breaks
+    typedef struct messageHtmlStrings {
+        QString model_name = "<p style=\"color: #7960ca; font-weight: bold\">";
+        QString user_name = "<p style=\"color: #4caf91; font-weight: bold\">";
+        QString reset_and_newline = "</p><br><br>";
+        QString reset_and_newparagraph = "</p><br><br><br>";
+    } MessageHtmlStrings;
 
 public:
 
@@ -63,16 +59,18 @@ private:
     QNetworkAccessManager *_network_manager;
     // other
     QString _model_name;
-    options _options;
+
+    Options _options;
+    static const MessageHtmlStrings _html;
 
     std::vector<QString> _qas;
     std::vector<QString> _conversations;
 
     void parse_tag();
-    void load_model();
+    void load_model_request();
     void wrap_set_enabled_send_button(bool setEnabled);
     void get_title();
-
+    void flush_prompt_editor_to_message_display(const QString& prompt);
     // void add_message_item(MessageWidget::Role role, QString sender, QString content);
 
 private slots:
@@ -89,3 +87,16 @@ signals:
 };
 
 #endif // OLLAMAGUI_UI_Chat_H
+// public:
+
+    // class MessageElement: public QWidget {
+    // public:
+    //     typedef enum role {
+    //         FromUser,
+    //         FromModel
+    //     } Role ;
+    // public:
+    //     MessageWidget(Role role, QString sender, QString content, QWidget *parent = nullptr);
+    //     ~MessageWidget();
+    //     QLabel *_contentLabel;
+    // };

@@ -2,6 +2,9 @@
 #include "./ui_chat.h"
 #include <ui/Dialog.h>
 
+const Chat::MessageHtmlStrings Chat::_html = Chat::MessageHtmlStrings();
+
+
 Chat::Chat(QString model, QWidget *parent) 
     :  QWidget(parent)
     , _parent(parent) 
@@ -11,33 +14,34 @@ Chat::Chat(QString model, QWidget *parent)
     , _cursor(_cursor = new QTextCursor(_doc))
     , _network_manager(new QNetworkAccessManager(this))
 {
+    // setup ui 
     _ui->setupUi(this);
-    parse_tag();
     _ui->MessageDisplay->setDocument(_doc);
     _ui->MessageDisplay->setReadOnly(true);
     _ui->PromptEditor->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+
+    // parse model name and load model into memory
+    this->parse_tag();
+    this->load_model_request();
+
+    // set default states on chat tab opening
     _ui->CheckBoxStream->setChecked(true);
     _options.StreamEnabled = true;
 
-    connect(_ui->SendPromptButton, &QPushButton::clicked,
-        this, [this]{ Chat::send_prompt_slot(); });
-
-    QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+S")
-        , _ui->PromptEditor);
-    connect(shortcut, SIGNAL(activated()),
-        this, SLOT(send_prompt_slot()));
-
-    // [ ! ] make also ollama actually unload the model from ram
-    connect(_ui->DisconnectButton, &QPushButton::clicked, 
-        this, &Chat::confirm_disconnect_slot);
-
-    // do this better
+    // Open a new conversation
+    // [ ! ] do this better
     _conversations.push_back("conv 1");
     _ui->ConversationsListWidget->addItem("Conv " 
         +  QString::fromUtf8(std::to_string(_conversations.size()).c_str()));
-    
-    load_model();
 
+    // configure send prompt area signals and slots
+    QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+S"), _ui->PromptEditor);
+    connect(shortcut, SIGNAL(activated()), this, SLOT(send_prompt_slot()));
+    connect(_ui->SendPromptButton, &QPushButton::clicked, this, [this]{ Chat::send_prompt_slot(); });
+
+    // configure options area signals and slots
+    // [ ! ] make also ollama actually unload the model from ram
+    connect(_ui->DisconnectButton, &QPushButton::clicked, this, &Chat::confirm_disconnect_slot);
     connect(_ui->CheckBoxStream, &QCheckBox::checkStateChanged, this, 
         [this]() {
             _options.StreamEnabled = (_ui->CheckBoxStream->isChecked()) ? true : false;
@@ -89,8 +93,8 @@ void Chat::wrap_set_enabled_send_button(bool setEnabled) {
     }
 }
 
-void Chat::load_model() {
-    wrap_set_enabled_send_button(false);
+void Chat::load_model_request() {
+    this->wrap_set_enabled_send_button(false);
     _ui->SendPromptButton->setText("Loading Model");
 
     QNetworkRequest request;
@@ -110,33 +114,34 @@ void Chat::load_model() {
     });
     QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
         reply->deleteLater();
-        wrap_set_enabled_send_button(true);
+        this->wrap_set_enabled_send_button(true);
     });
 }
 
+void Chat::flush_prompt_editor_to_message_display(const QString& prompt) {
+    // put prompt to display
+    // delete trailing & leading newlines [ ! ]
+    _cursor->insertHtml(Chat::_html.user_name % "you");
+    _cursor->insertHtml(Chat::_html.reset_and_newline);
+    _cursor->insertText(prompt);
+    _cursor->insertHtml(Chat::_html.reset_and_newparagraph);
+    _ui->PromptEditor->setPlainText(""); // reset prompt editor
+}
+
+
 void Chat::send_prompt_slot()
 {
-    if (_ui->SendPromptButton->isEnabled() == false) {
+    if (!_ui->SendPromptButton->isEnabled()) {
         return;
     }
-
-    // delete trailing & leading newlines [ ! ]
     QString prompt = (_ui->PromptEditor->toPlainText());
-
-    // add_message_item(MessageWidget::Role::FromUser, "You", prompt);
-
-    // QTextBlockFormat format;
-    // format.setBackground(Qt::green);
-    _cursor->insertText("you");
-    _cursor->insertText("\r\n");
-
-    // cursor->insertBlock(format);
-    _cursor->insertText(prompt);
-    _cursor->insertText("\r\n");
-
     _qas.push_back(prompt);
-    _ui->PromptEditor->setPlainText("");
-    wrap_set_enabled_send_button(false);
+    this->wrap_set_enabled_send_button(false);
+    this->flush_prompt_editor_to_message_display(prompt);
+
+    // add model name to display
+    _cursor->insertHtml(Chat::_html.model_name % _model_name);
+    _cursor->insertHtml(Chat::_html.reset_and_newline);
 
     QNetworkRequest request;
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -149,28 +154,23 @@ void Chat::send_prompt_slot()
         obj.insert("stream", QJsonValue::fromVariant(false));
 
     QJsonDocument doc(obj);
-    QByteArray data = doc.toJson();
-    // qDebug() << doc;
-    
+    QByteArray data = doc.toJson();    
     QNetworkReply *reply = _network_manager->post(request, data);
 
-    _cursor->insertText(_model_name);
-    _cursor->insertText("\r\n");
 
     QObject::connect(reply, &QNetworkReply::readyRead, this, [reply, this]() {
         while(reply->bytesAvailable()) {
             QByteArray response = reply->read(reply->bytesAvailable());
             QJsonObject json_obj = QJsonDocument::fromJson(response).object();
             auto model_answer = json_obj.value("response").toString();
-
             _cursor->insertText(model_answer);
         }
     });
 
     QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
-        _cursor->insertText("\r\n");
+        _cursor->insertHtml(Chat::_html.reset_and_newparagraph);
         reply->deleteLater();
-        wrap_set_enabled_send_button(true);
+        this->wrap_set_enabled_send_button(true);
     });
 
 }
@@ -303,3 +303,21 @@ void Chat::get_title() {
     // // _ui->MessageDisplayListWidget->setAutoScroll(false);
     // _ui->MessageDisplayListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     // _ui->MessageDisplayListWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+
+
+
+    // QTextBlockFormat default_block_format = _cursor->blockFormat();
+    // QTextBlockFormat tmp_block_format = default_block_format;
+    // tmp_block_format.setBackground(Qt::green);
+    // tmp_block_format.setAlignment(Qt::AlignRight);
+    // _cursor->setBlockFormat(tmp_block_format);
+
+    // QTextCharFormat default_char_format = _cursor->charFormat();
+    // QTextCharFormat tmp_char_format = default_char_format;
+    // tmp_char_format.setFontWeight(QFont::Bold);
+    // _cursor->setCharFormat(tmp_char_format);
+
+    // QString html_test = "<font color=\"Red\">";
+    // QString html_test = "<p style=\"color: red\">";
+    // QString message = html_test % _model_name;
