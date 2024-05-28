@@ -29,8 +29,8 @@ QPushButton {
     border-radius: 6px;
     /* top: 2px; left: 2px; */
     color: #dadada;
-    padding: 10px;
-    margin: 2px;
+    padding: 9px;
+    margin: 1px;
 }
 
 QPushButton::disabled {
@@ -137,13 +137,13 @@ QListWidget::item {
     /* background: #171717; */
     /* border: none; */
     padding: 10px;
+    border-radius: 6px;
 }
 QListWidget::item:hover
 , QListWidget::item:selected
 , QListWidget::item:clicked
-/* , QListWidget::item:active */
-, QListWidget::item:checked
-, QListWidget::item:focus
+/*, QListWidget::item:checked */
+/*, QListWidget::item:focus */
 , QListWidget::item:selected:hover
 {
     background: #534091;
@@ -166,7 +166,7 @@ QTextEdit[objectName^="MessageDisplay"]  {
 QPlainTextEdit[objectName^="PromptEditor"] {
     background-color: #171717;
     color: #d0d0d0;
-    padding: 10px;
+    padding: 1em;
 }
 
 /* --------------
@@ -177,9 +177,9 @@ QGroupBox {
     /* border: none; */
     border: 1.5px solid #303030;
     border-radius: 8px;
-    margin: .3em;
+    /*margin: .3em;
     margin-top: 1.4em;
-    padding: 0.2em;
+    padding: 0.2em;*/
 }
 
 /* QGroupBox::title {
@@ -199,7 +199,7 @@ QDialog {
 ----------------*/
 
 QTabWidget::pane {
-    border-top: 1px solid #4d3b88;
+    border-top: 1.5px solid #4d3b88;
 
 }
 

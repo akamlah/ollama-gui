@@ -34,17 +34,17 @@
                         </item>
                         <item>
                             <widget class="QGroupBox" name="SettingssGroup">
-                                <property name="title">
+                                <!-- <property name="title">
                                     <string>Options</string>
-                                </property>
+                                </property> -->
                                 <layout class="QVBoxLayout" name="verticalLayout_276788">
-                                    <!-- <item>
+                                    <item>
                                         <widget class="QLabel" name="OptionsLabel">
                                             <property name="text">
                                                 <string>Options</string>
                                             </property>
                                         </widget>
-                                    </item> -->
+                                    </item>
                                     <item>
                                         <widget class="QCheckBox" name="CheckBoxStream">
                                             <property name="text">
@@ -102,10 +102,17 @@
 
                         <item>
                             <widget class="QGroupBox" name="ConversationsGroup">
-                                <property name="title">
+                                <!-- <property name="title">
                                     <string>Conversations</string>
-                                </property>
+                                </property> -->
                                 <layout class="QVBoxLayout" name="verticalLayout_278" stretch="1,6">
+                                    <item>
+                                        <widget class="QLabel" name="ConversationsLabel">
+                                            <property name="text">
+                                                <string>Conversations</string>
+                                            </property>
+                                        </widget>
+                                    </item>
                                     <item>
                                         <widget class="QListWidget" name="ConversationsListWidget"/>
                                     </item>
