@@ -29,21 +29,53 @@ MainWindow::MainWindow(QMainWindow *parent)
 
 
     QHBoxLayout *header_layout = new QHBoxLayout();
+
     QLabel *url_label = new QLabel(central_widget);
     url_label->setObjectName("UrlInstancelabel");
     url_label->setText( "Currentnly connected to ollama server instance at: " +
         Api::Endpoints::get_endpoints()->get_base_url().toString() );
     url_label->setWordWrap(true);
     header_layout->addWidget(url_label, 0);
-    // layout->addWidget(url_label, 0, 0);
 
     QPushButton *settings_btn = new QPushButton(central_widget);
     settings_btn->setText("Settings");
     header_layout->addWidget(settings_btn, 1, Qt::AlignRight);
-    // layout->addWidget(settings_btn, 0, 1);
-    header_layout->setStretch(0, 3);
+
+    _nav_button = new QPushButton(central_widget);
+    _nav_button->setObjectName("NavButton");
+    header_layout->addWidget(_nav_button, 2, Qt::AlignRight);
+    _nav_button->hide();
+
+    connect(_nav_button, &QPushButton::clicked, this, [this](){
+        if (_stackedWidget->currentIndex() == 0) {
+            _nav_button->setText("New Model");
+            _stackedWidget->setCurrentIndex(1); 
+        }
+        else {
+            _nav_button->setText("Back to open conversations");
+            _stackedWidget->setCurrentIndex(0); 
+        }
+    });
+    
+    header_layout->setStretch(0, 20);
     header_layout->setStretch(1, 1);
+    header_layout->setStretch(2, 1);
+
     layout->addLayout(header_layout, 0, 0);
+
+    SelectModel *select_model = new SelectModel(central_widget);
+    _stackedWidget->addWidget(select_model);
+    _stackedWidget->addWidget(_tabWidget);
+    _stackedWidget->setCurrentIndex(0);
+
+    layout->addWidget(_stackedWidget, 2, 0);
+
+    QObject::connect(
+        select_model, 
+        SIGNAL(model_was_selected_signal(QString)),
+        this,
+        SLOT(model_was_selected_slot(QString))
+    );
     
     int default_font_size = this->fontInfo().pixelSize();
     if (default_font_size > 4 && default_font_size < 40) {
@@ -70,38 +102,6 @@ MainWindow::MainWindow(QMainWindow *parent)
                 QWidget::setStyleSheet("font-size:" + size_str + "px;");
             }
     });
-    
-    _nav_button = new QPushButton(central_widget);
-    _nav_button->setObjectName("NavButton");
-    // _nav_button->setFixedSize(_nav_button->size());
-    // _nav_button->setMinimumWidth(Qt::MinimumSize);
-
-    layout->addWidget(_nav_button, 1, 0, Qt::AlignRight);
-    _nav_button->hide();
-    connect(_nav_button, &QPushButton::clicked, this, [this](){
-        if (_stackedWidget->currentIndex() == 0) {
-            _nav_button->setText("New Model");
-            _stackedWidget->setCurrentIndex(1); 
-        }
-        else {
-            _nav_button->setText("Back to open conversations");
-            _stackedWidget->setCurrentIndex(0); 
-        }
-    });
-
-    SelectModel *select_model = new SelectModel(central_widget);
-    _stackedWidget->addWidget(select_model);
-    _stackedWidget->addWidget(_tabWidget);
-    _stackedWidget->setCurrentIndex(0);
-
-    layout->addWidget(_stackedWidget, 2, 0);
-
-    QObject::connect(
-        select_model, 
-        SIGNAL(model_was_selected_signal(QString)),
-        this,
-        SLOT(model_was_selected_slot(QString))
-    );
 }
 
 void MainWindow::model_was_selected_slot(QString name) {
