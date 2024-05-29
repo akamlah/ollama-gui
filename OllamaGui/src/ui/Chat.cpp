@@ -16,6 +16,7 @@ Chat::Chat(QString model, QWidget *parent)
 {
     // setup ui 
     _ui->setupUi(this);
+    this->setObjectName("chatt");
     _ui->MessageDisplay->setDocument(_doc);
     _ui->MessageDisplay->setReadOnly(true);
     _ui->PromptEditor->setFocusPolicy(Qt::FocusPolicy::ClickFocus);

@@ -14,13 +14,13 @@
         <string>Form</string>
     </property>
 
-    <layout class="QVBoxLayout" name="verticalLayout_1">
+    <layout class="QVBoxLayout" name="verticalLayout_tab">
 
 
 
         <item>
 
-            <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,6">
+            <layout class="QHBoxLayout" name="horizontalLayout_tab" stretch="1,6">
 
                 <item>
                     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -105,7 +105,7 @@
                                 <!-- <property name="title">
                                     <string>Conversations</string>
                                 </property> -->
-                                <layout class="QVBoxLayout" name="verticalLayout_278" stretch="1,6">
+                                <layout class="QVBoxLayout" name="verticalLayout_278" stretch="1,20">
                                     <item>
                                         <widget class="QLabel" name="ConversationsLabel">
                                             <property name="text">

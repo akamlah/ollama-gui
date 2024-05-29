@@ -7,6 +7,18 @@ QWidget {
     color: #a1a1a1;
 }
 
+/* QStackedWidget{
+    padding: 0px;
+    background-color: #2f725e;
+    margin-left: 0px;
+}
+QWidget[objectName^=chatt]{
+    padding: 0px;
+    background-color: #45a6af;
+    margin-left: 0px;
+} */
+
+
 /* -------------
     MainWindow
 ---------------*/
@@ -29,8 +41,8 @@ QPushButton {
     border-radius: .5em;
     /* top: 2px; left: 2px; */
     color: #dadada;
-    padding: 9px;
-    margin: 1px;
+    padding: 5px;
+    /* margin: 1px; */
 }
 
 QPushButton::disabled {
@@ -74,6 +86,13 @@ QPushButton[objectName^=KeepAlivePlus]::hover
     background-color: #949494;
 }
 
+QPushButton[objectName^=CancelButton]
+, QPushButton[objectName^=OKButton]
+{
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
 /* -------------
     Labels
 ---------------*/
@@ -105,7 +124,7 @@ QLabel[objectName^="UrlInstancelabel"]
     color: #a1a1a1;
 } */
 
-QCheckBox::indicator {
+/* QCheckBox::indicator {
     border-radius: 2px;
     border: none;
 }
@@ -117,7 +136,7 @@ QCheckBox::indicator::unchecked
 QCheckBox::indicator::checked 
 {
     background-color: #949494;
-}
+} */
 
 
 /* -------------
@@ -126,7 +145,7 @@ QCheckBox::indicator::checked
 
 /* Default */
 QListWidget {
-    background: #171717;
+    background: #181818;
     /* color: #d0d0d0; */
 }
 
@@ -177,9 +196,9 @@ QGroupBox {
     /* border: none; */
     border: 1.5px solid #303030;
     border-radius: .8em;
-    /* margin: .3em; */
-    margin-top: .4em;
-    padding: 0.2em;
+
+    /* margin-top: .4em; */
+    /* padding: 0.2em; */
 }
 
 /* QGroupBox::title {
@@ -197,6 +216,11 @@ QDialog {
 /* --------------
     Tabs
 ----------------*/
+/* 
+QTableWidget {
+    margin: 0em;
+    padding: 0em;
+} */
 
 QTabWidget::pane {
     border-top: 1.5px solid #4d3b88;
