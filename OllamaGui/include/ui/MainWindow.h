@@ -32,10 +32,18 @@ public slots:
     void close_conversation_request_slot();
 
 private:
+    QWidget *_central_widget;
     QStackedWidget *_stackedWidget;
     QTabWidget * _tabWidget;
     QPushButton *_nav_button;
     int _font_size;
+
+private:
+    void source_stylesheet();
+    QBoxLayout * setup_central_widget_navigation_area();
+    void create_new_model_selection_view();
+    void setup_zoomin_zoomout_shortcuts();
+
 };
 
 #endif // OLLAMAGUI_UI_MainWindow_H
