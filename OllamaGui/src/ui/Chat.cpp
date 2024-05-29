@@ -19,7 +19,10 @@ Chat::Chat(QString model, QWidget *parent)
     this->setObjectName("chatt");
     _ui->MessageDisplay->setDocument(_doc);
     _ui->MessageDisplay->setReadOnly(true);
+    // autoscroll browser
+
     _ui->PromptEditor->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    // _cursor->insertHtml(Chat::_html.start);
 
     // parse model name and load model into memory
     this->parse_tag();
@@ -117,15 +120,17 @@ void Chat::load_model_request() {
         reply->deleteLater();
         this->wrap_set_enabled_send_button(true);
     });
+    _cursor->insertHtml(Chat::_html.reset % "\n");
 }
 
 void Chat::flush_prompt_editor_to_message_display(const QString& prompt) {
     // put prompt to display
     // delete trailing & leading newlines [ ! ]
-    _cursor->insertHtml(Chat::_html.user_name % "you");
-    _cursor->insertHtml(Chat::_html.reset_and_newline);
+    _cursor->insertHtml(Chat::_html.user_name % QString("you") % Chat::_html.reset);
     _cursor->insertText(prompt);
-    _cursor->insertHtml(Chat::_html.reset_and_newparagraph);
+    _cursor->insertHtml(Chat::_html.reset % "\n");
+    _cursor->insertText("\r\n");
+    _cursor->insertText("\r\n");
     _ui->PromptEditor->setPlainText(""); // reset prompt editor
 }
 
@@ -142,7 +147,8 @@ void Chat::send_prompt_slot()
 
     // add model name to display
     _cursor->insertHtml(Chat::_html.model_name % _model_name);
-    _cursor->insertHtml(Chat::_html.reset_and_newline);
+    _cursor->insertHtml(Chat::_html.reset);
+    _cursor->insertText("\r\n");
 
     QNetworkRequest request;
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -169,7 +175,10 @@ void Chat::send_prompt_slot()
     });
 
     QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
-        _cursor->insertHtml(Chat::_html.reset_and_newparagraph);
+        _cursor->insertHtml(Chat::_html.reset % "\n");
+        _cursor->insertText("\r\n");
+        _cursor->insertText("\r\n");
+        // _cursor->insertText("\r\n");
         reply->deleteLater();
         this->wrap_set_enabled_send_button(true);
     });

@@ -40,8 +40,7 @@ private:
     typedef struct messageHtmlStrings {
         QString model_name = "<p style=\"color: #7960ca; font-weight: bold\">";
         QString user_name = "<p style=\"color: #4caf91; font-weight: bold\">";
-        QString reset_and_newline = "</p><br><br>";
-        QString reset_and_newparagraph = "</p><br><br><br>";
+        QString reset = "</p><br>";
     } MessageHtmlStrings;
 
 public:

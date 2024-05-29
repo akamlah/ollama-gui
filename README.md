@@ -24,5 +24,5 @@ The application tries to connect to an ollama server instance on ```127.0.0.1```
 ------
 
 So far tested platforms: 
-- Linux x86_64, X11
-- MacOS 13.3.1, x86_64
+- Linux x86_64 (X11 AwesomeWM Arch)
+- MacOS 13.3.1 x86_64
