@@ -43,7 +43,7 @@ void SelectModel::model_was_double_clicked_slot() {
         dialog->close();
         dialog->deleteLater();
     });
-    dialog->show();
+    dialog->exec();
 }
 
 // Slot

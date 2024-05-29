@@ -19,6 +19,10 @@ Chat::Chat(QString model, QWidget *parent)
     this->setObjectName("chatt");
     _ui->MessageDisplay->setDocument(_doc);
     _ui->MessageDisplay->setReadOnly(true);
+    _ui->WordStreamExplanationLabel->setWordWrap(true);
+    // auto bullet points
+    _ui->MessageDisplay->setAutoFormatting(QTextEdit::AutoAll);
+
     // autoscroll browser
 
     _ui->PromptEditor->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
@@ -83,7 +87,7 @@ void Chat::confirm_disconnect_slot() {
         dialog->close();
         dialog->deleteLater();
     });
-    dialog->show();
+    dialog->exec();
 }
 
 void Chat::wrap_set_enabled_send_button(bool setEnabled) {
@@ -112,12 +116,14 @@ void Chat::load_model_request() {
     QJsonDocument doc(obj);
     QByteArray data = doc.toJson();
 
+    // Do something if no connection [ ! ]
     QNetworkReply *reply = _network_manager->post(request, data);
     QObject::connect(reply, &QNetworkReply::readyRead, this, [reply, this]() {
-        // ... do something if no connection
+        // ... do some loading animation
     });
     QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
         reply->deleteLater();
+        // ... end loading animation
         this->wrap_set_enabled_send_button(true);
     });
     _cursor->insertHtml(Chat::_html.reset % "\n");
@@ -163,14 +169,16 @@ void Chat::send_prompt_slot()
     QJsonDocument doc(obj);
     QByteArray data = doc.toJson();    
     QNetworkReply *reply = _network_manager->post(request, data);
-
-
     QObject::connect(reply, &QNetworkReply::readyRead, this, [reply, this]() {
         while(reply->bytesAvailable()) {
             QByteArray response = reply->read(reply->bytesAvailable());
             QJsonObject json_obj = QJsonDocument::fromJson(response).object();
+            qDebug() << json_obj;
             auto model_answer = json_obj.value("response").toString();
-            _cursor->insertText(model_answer);
+            if (_options.StreamEnabled)
+                _cursor->insertText(model_answer);
+            else
+                _cursor->insertMarkdown(model_answer);
         }
     });
 
@@ -178,7 +186,6 @@ void Chat::send_prompt_slot()
         _cursor->insertHtml(Chat::_html.reset % "\n");
         _cursor->insertText("\r\n");
         _cursor->insertText("\r\n");
-        // _cursor->insertText("\r\n");
         reply->deleteLater();
         this->wrap_set_enabled_send_button(true);
     });

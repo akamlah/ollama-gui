@@ -112,8 +112,15 @@ QLabel[objectName^="clickToSelectLabel"] {
 }
 QLabel[objectName^="UrlInstancelabel"]
 , QLabel[objectName^="ShortctuLabel"]
+, QLabel[objectName^="WordStreamExplanationLabel"]
 {
     color: #6b6b6b;
+}
+
+QLabel[objectName^="WordStreamExplanationLabel"]
+{
+    padding-top: 0px;
+    padding-left: 3px;
 }
 
 /* -------------
@@ -179,7 +186,7 @@ QListWidget::item:hover
 QTextEdit[objectName^="MessageDisplay"]  {
     background-color: #202020;
     border: none;
-    color: #d0d0d0;
+    color: #b1b0b0;
 }
 
 QPlainTextEdit[objectName^="PromptEditor"] {

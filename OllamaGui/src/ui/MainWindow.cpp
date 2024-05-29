@@ -111,17 +111,20 @@ void MainWindow::model_was_selected_slot(QString name) {
         if (_tabWidget->tabText(i) == name) {
             _stackedWidget->setCurrentIndex(1);
             _nav_button->setText("New Model");
+            _tabWidget->setCurrentIndex(i);
             return ;
         }
     }
 
     Chat *chat = new Chat(name, _tabWidget);
     _tabWidget->addTab(chat, name);
-    // _stackedWidget->addWidget(chat);
-    // _stackedWidget->setCurrentIndex(_stackedWidget->count() - 1);
+    _tabWidget->setCurrentIndex(_tabWidget->count() - 1);
+
     _nav_button->show();
     _nav_button->setText("New Model");
+
     _stackedWidget->setCurrentIndex(1);
+
     QObject::connect(
         chat,
         SIGNAL(close_conversation_request_signal()),
