@@ -11,8 +11,8 @@
 // 
 //         |----- QHBoxLayout = {url info, settings button, "nav" button}
 //         |                                                                  
-//  _______|____________________________________
-//  |  ____|_______________________________     |
+//   ______|____________________________________
+//  |   ___|______________________________      |
 //  |  | --|----------------------------- |   +-----central widget
 //  |  | | +    navigation area         | |     |
 //  |  | -------------------------------- |     |
@@ -46,6 +46,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     // QProcess ollama_run;
     // ollama_run.start("ollama");
 
+    this->source_stylesheet();
     this->setMinimumSize(960, 540);
     this->setCentralWidget(_central_widget);
 
@@ -53,13 +54,14 @@ MainWindow::MainWindow(QMainWindow *parent)
     _central_widget->setLayout(central_widget_layout);
 
     QBoxLayout * header_layout = this->setup_central_widget_navigation_area();
-    central_widget_layout->addLayout(header_layout, 0, 0);
 
-    this->create_new_model_selection_view();
+    central_widget_layout->addItem(header_layout, 0, 0);
     central_widget_layout->addWidget(_stackedWidget, 2, 0);
 
+    this->create_new_model_selection_view();
     this->setup_zoomin_zoomout_shortcuts();
 }
+
 
 MainWindow::~MainWindow() {
     delete _stackedWidget;

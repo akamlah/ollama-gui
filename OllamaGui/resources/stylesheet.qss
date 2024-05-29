@@ -42,7 +42,7 @@ QPushButton {
     /* top: 2px; left: 2px; */
     color: #dadada;
     padding: 5px;
-    /* margin: 1px; */
+    margin: 2px;
 }
 
 QPushButton::disabled {

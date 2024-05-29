@@ -20,13 +20,7 @@ Chat::Chat(QString model, QWidget *parent)
     _ui->MessageDisplay->setDocument(_doc);
     _ui->MessageDisplay->setReadOnly(true);
     _ui->WordStreamExplanationLabel->setWordWrap(true);
-    // auto bullet points
-    _ui->MessageDisplay->setAutoFormatting(QTextEdit::AutoAll);
-
-    // autoscroll browser
-
     _ui->PromptEditor->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
-    // _cursor->insertHtml(Chat::_html.start);
 
     // parse model name and load model into memory
     this->parse_tag();
@@ -62,15 +56,11 @@ Chat::~Chat() {
     delete _ui;
 }
 
-void Chat::parse_tag() {
-    if (_model_tag.isEmpty() || _model_tag.isNull())
-        _model_tag = "Model";
-    auto split_tag = _model_tag.split(u':');
-    if (split_tag.length() > 0 && !split_tag[0].isEmpty() && !split_tag[0].isNull())
-        _model_name = split_tag[0];
-    else
-        _model_name = _model_tag;
-}
+
+// ----------------------------------------------------------------------------------
+// Slots
+// ----------------------------------------------------------------------------------
+
 
 /// @brief Asks to confirm disconnect from model
 void Chat::confirm_disconnect_slot() {
@@ -89,57 +79,6 @@ void Chat::confirm_disconnect_slot() {
     });
     dialog->exec();
 }
-
-void Chat::wrap_set_enabled_send_button(bool setEnabled) {
-    if (setEnabled) {
-        _ui->SendPromptButton->setEnabled(true);
-        _ui->SendPromptButton->setText("Send Prompt");
-    }
-    else {
-        _ui->SendPromptButton->setEnabled(false);
-        _ui->SendPromptButton->setText("Loading Reply ... ");
-    }
-}
-
-void Chat::load_model_request() {
-    this->wrap_set_enabled_send_button(false);
-    _ui->SendPromptButton->setText("Loading Model");
-
-    QNetworkRequest request;
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setUrl(Api::Endpoints::get_endpoints()->api_urls_post.generate_url);
-
-    QJsonObject obj;
-    obj.insert("model", QJsonValue::fromVariant(_model_tag));
-    obj.insert("prompt", QJsonValue::fromVariant(""));
-    obj.insert("stream", QJsonValue::fromVariant(false));
-    QJsonDocument doc(obj);
-    QByteArray data = doc.toJson();
-
-    // Do something if no connection [ ! ]
-    QNetworkReply *reply = _network_manager->post(request, data);
-    QObject::connect(reply, &QNetworkReply::readyRead, this, [reply, this]() {
-        // ... do some loading animation
-    });
-    QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
-        reply->deleteLater();
-        // ... end loading animation
-        this->wrap_set_enabled_send_button(true);
-    });
-    _cursor->insertHtml(Chat::_html.reset % "\n");
-}
-
-void Chat::flush_prompt_editor_to_message_display(const QString& prompt) {
-    // put prompt to display
-    // delete trailing & leading newlines [ ! ]
-    _cursor->insertHtml(Chat::_html.user_name % QString("you") % Chat::_html.reset);
-    _cursor->insertText(prompt);
-    _cursor->insertHtml(Chat::_html.reset % "\n");
-    _cursor->insertText("\r\n");
-    _cursor->insertText("\r\n");
-    _ui->PromptEditor->setPlainText(""); // reset prompt editor
-}
-
 
 void Chat::send_prompt_slot()
 {
@@ -192,6 +131,76 @@ void Chat::send_prompt_slot()
 
 }
 
+
+// ----------------------------------------------------------------------------------
+// Private member functions
+// ----------------------------------------------------------------------------------
+
+
+void Chat::parse_tag() {
+    if (_model_tag.isEmpty() || _model_tag.isNull())
+        _model_tag = "Model";
+    auto split_tag = _model_tag.split(u':');
+    if (split_tag.length() > 0 && !split_tag[0].isEmpty() && !split_tag[0].isNull())
+        _model_name = split_tag[0];
+    else
+        _model_name = _model_tag;
+}
+
+
+void Chat::load_model_request() {
+    this->wrap_set_enabled_send_button(false);
+    _ui->SendPromptButton->setText("Loading Model");
+
+    QNetworkRequest request;
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setUrl(Api::Endpoints::get_endpoints()->api_urls_post.generate_url);
+
+    QJsonObject obj;
+    obj.insert("model", QJsonValue::fromVariant(_model_tag));
+    obj.insert("prompt", QJsonValue::fromVariant(""));
+    obj.insert("stream", QJsonValue::fromVariant(false));
+    QJsonDocument doc(obj);
+    QByteArray data = doc.toJson();
+
+    // Do something if no connection [ ! ]
+    QNetworkReply *reply = _network_manager->post(request, data);
+    QObject::connect(reply, &QNetworkReply::readyRead, this, [reply, this]() {
+        // ... do some loading animation
+    });
+    QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
+        reply->deleteLater();
+        // ... end loading animation
+        this->wrap_set_enabled_send_button(true);
+    });
+    _cursor->insertHtml(Chat::_html.reset % "\n");
+}
+
+
+void Chat::flush_prompt_editor_to_message_display(const QString& prompt) {
+    // put prompt to display
+    // delete trailing & leading newlines [ ! ]
+    _cursor->insertHtml(Chat::_html.user_name % QString("you") % Chat::_html.reset);
+    _cursor->insertText(prompt);
+    _cursor->insertHtml(Chat::_html.reset % "\n");
+    _cursor->insertText("\r\n");
+    _cursor->insertText("\r\n");
+    _ui->PromptEditor->setPlainText(""); // reset prompt editor
+}
+
+
+void Chat::wrap_set_enabled_send_button(bool setEnabled) {
+    if (setEnabled) {
+        _ui->SendPromptButton->setEnabled(true);
+        _ui->SendPromptButton->setText("Send Prompt");
+    }
+    else {
+        _ui->SendPromptButton->setEnabled(false);
+        _ui->SendPromptButton->setText("Loading Reply ... ");
+    }
+}
+
+
 void Chat::get_title() {
 
     QString prompt = ("Give a 3 word title to our conversation. Answer only with the title and nothing else.");
@@ -228,113 +237,3 @@ void Chat::get_title() {
     });
     // wait for model to answer and then reset the button
 }
-
-// void Chat::add_message_item(MessageWidget::Role role, QString sender, QString content) {
-//     QListWidgetItem *msg_item = new QListWidgetItem();
-//     MessageWidget *msg_widget = new MessageWidget(role, sender, content, this);
-//     msg_item->setSizeHint((msg_widget->minimumSizeHint()));
-//     _ui->MessageDisplayListWidget->addItem(msg_item);
-//     _ui->MessageDisplayListWidget->setItemWidget(msg_item, msg_widget);
-// }
-
-
-// Chat::MessageWidget::MessageWidget(MessageWidget::Role role, QString sender, QString content, QWidget *parent) 
-//     :  QWidget(parent)
-// {
-//     Qt::Alignment alignment = (role == MessageWidget::FromUser) ? Qt::AlignRight : Qt::AlignLeft;
-//     Qt::LayoutDirection direction = (role == MessageWidget::FromUser) ? Qt::RightToLeft : Qt::LeftToRight;
-//     QString color = (role == MessageWidget::FromModel) ? "#AC9BEF" : "#7DC8B1";
-
-//     QLabel *senderLabel = new QLabel(this);
-//     senderLabel->setText(sender);
-//     senderLabel->setAlignment(alignment);
-//     senderLabel->setLayoutDirection(direction);
-//     senderLabel->setStyleSheet("color:" + color + "; margin-bottmo 5px; margin-top: 5px;");
-//     senderLabel->setWordWrap(true);
-
-//     QFont font_sender = senderLabel->font();
-//     font_sender.setBold(true);
-//     senderLabel->setFont(font_sender);
-
-//     _contentLabel = new QLabel(this);
-//     _contentLabel->setText(content);
-//     _contentLabel->setAlignment(alignment);
-//     _contentLabel->setLayoutDirection(direction);
-//     _contentLabel->setStyleSheet(" color: #d0d0d0;");
-//     _contentLabel->setWordWrap(true);
-
-//     QGridLayout *layout = new QGridLayout(this);
-//     layout->addWidget(senderLabel, 0, 0);
-//     layout->addWidget(_contentLabel, 1, 0);
-//     layout->setRowStretch(0, 0);
-//     layout->setRowStretch(1, 1);
-//     this->setLayout(layout);
-// }
-
-
-    // QNetworkReply *reply = _network_manager->post(request, data);
-    // QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
-    //     QRestReply restReply(reply);
-    //     QByteArray response = reply->readAll();
-    //     if (restReply.isSuccess() && !response.isEmpty()) {
-    //         QJsonObject json_obj = QJsonDocument::fromJson(response).object();
-    //         auto model_answer = json_obj.value("response").toString();
-    //         if (!model_answer.isEmpty() && !model_answer.isNull()) {
-    //             // auto mdel_answer_split = model_answer.split(u'\n');
-    //             // if (!mdel_answer_split.isEmpty()) {
-    //             //     for (auto line: mdel_answer_split) {
-    //             //         _ui->MessageDisplayListWidget->addItem(line);
-    //             //     }
-    //             // }
-    //             auto name_parts = _model.split(u':');
-    //             // _ui->MessageDisplayListWidget->addItem(name_parts[0] + "\n" + model_answer);
-    //             add_message_item(MessageWidget::Role::FromModel, name_parts[0], model_answer);
-
-    //             _qas.push_back(model_answer);
-    //             if (_qas.size() % 6 == 0) {
-    //                 get_title();
-    //             }
-    //         }
-    //         _ui->SendPromptButton->setEnabled(true);
-    //     }
-    //     else{
-    //         QString err = reply->errorString();
-    //         _ui->MessageDisplayListWidget->addItem("An error occurred");
-    //         _ui->MessageDisplayListWidget->addItem(err);
-    //         qDebug() << "Error:" << err;
-    //     }
-    //     reply->deleteLater();
-    // });
-    // wait for model to answer and then reset the button
-
-
-
-    // QListWidgetItem *msg_item = new QListWidgetItem();
-    // MessageWidget *msg_widget = new MessageWidget(MessageWidget::Role::FromModel, _model, "", this);
-    // msg_item->setSizeHint((msg_widget->minimumSizeHint()));
-    // _ui->MessageDisplayListWidget->addItem(msg_item);
-    // _ui->MessageDisplayListWidget->setItemWidget(msg_item, msg_widget);
-
-    // _ui->MessageDisplayListWidget->setWordWrap(true);
-    // _ui->MessageDisplayListWidget->setAlternatingRowColors(true);
-    // // _ui->MessageDisplayListWidget->setAutoScroll(false);
-    // _ui->MessageDisplayListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    // _ui->MessageDisplayListWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-
-
-
-    // QTextBlockFormat default_block_format = _cursor->blockFormat();
-    // QTextBlockFormat tmp_block_format = default_block_format;
-    // tmp_block_format.setBackground(Qt::green);
-    // tmp_block_format.setAlignment(Qt::AlignRight);
-    // _cursor->setBlockFormat(tmp_block_format);
-
-    // QTextCharFormat default_char_format = _cursor->charFormat();
-    // QTextCharFormat tmp_char_format = default_char_format;
-    // tmp_char_format.setFontWeight(QFont::Bold);
-    // _cursor->setCharFormat(tmp_char_format);
-
-    // QString html_test = "<font color=\"Red\">";
-    // QString html_test = "<p style=\"color: red\">";
-    // QString message = html_test % _model_name;

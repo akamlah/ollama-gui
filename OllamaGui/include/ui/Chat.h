@@ -65,13 +65,6 @@ private:
     std::vector<QString> _qas;
     std::vector<QString> _conversations;
 
-    void parse_tag();
-    void load_model_request();
-    void wrap_set_enabled_send_button(bool setEnabled);
-    void get_title();
-    void flush_prompt_editor_to_message_display(const QString& prompt);
-    // void add_message_item(MessageWidget::Role role, QString sender, QString content);
-
 private slots:
     void send_prompt_slot();
     void confirm_disconnect_slot();
@@ -79,6 +72,14 @@ private slots:
 
 signals:
     void close_conversation_request_signal();
+
+private:
+    void parse_tag();
+    void load_model_request();
+    void wrap_set_enabled_send_button(bool setEnabled);
+    void get_title();
+    void flush_prompt_editor_to_message_display(const QString& prompt);
+    // void add_message_item(MessageWidget::Role role, QString sender, QString content);
 
 
 
