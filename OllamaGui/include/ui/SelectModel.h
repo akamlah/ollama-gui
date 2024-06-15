@@ -10,10 +10,6 @@
 #include <QNetworkAccessManager>
 #include <QDialog>
 #include <QGridLayout>
-// #include <Api.h>
-
-// #include <Api.h>
-
 #include <vector>
 
 namespace Ui {
@@ -42,7 +38,6 @@ private:
     Ui::SelectModel *_ui;
     QNetworkAccessManager *_network_manager;
     std::vector<QString> _model_list;
-    QWidget *_parent;
 
     void display_tags();
 

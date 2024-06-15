@@ -18,6 +18,7 @@ namespace Ui {
 }
 QT_END_NAMESPACE
 
+
 class MainWindow: public QMainWindow
 {
     Q_OBJECT
@@ -28,19 +29,23 @@ public:
     ~MainWindow();
 
 public slots:
+
     void model_was_selected_slot(QString name);
     void close_conversation_request_slot();
 
 private:
+
     QWidget *_central_widget;
     QStackedWidget *_stackedWidget;
     QTabWidget * _tabWidget;
     QPushButton *_nav_button;
     int _font_size;
+    QBoxLayout * _header_layout;
 
 private:
+
     void source_stylesheet();
-    QBoxLayout * setup_central_widget_navigation_area();
+    void setup_central_widget_navigation_area();
     void create_new_model_selection_view();
     void setup_zoomin_zoomout_shortcuts();
 

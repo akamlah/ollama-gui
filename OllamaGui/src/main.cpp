@@ -1,25 +1,19 @@
-// stdlib
 #include <iostream>
-// Qt
 #include <QApplication>
-// local
-// #include <ui/Widget.h>
 #include <ui/MainWindow.h>
-// #include <ui/RequestManager.h>
-
-// class MainWindow;
 
 int main(int argc, char *argv[])
 {
     try {
-        QApplication app (argc, argv);
-        // OllGui::Ui::Widget ollama;
-        MainWindow ollama;
-        ollama.show();
-        app.exec();
+        QApplication q_app (argc, argv);
+        MainWindow ollama_gui;
+        ollama_gui.show();
+        q_app.exec();
     } catch (std::exception e) {
+        std::cerr << "An error occurred" << std::endl;
         std::cerr << e.what() << std::endl;
         return 1;
     }
+    system("leaks ollamagui 1>&2");
     return 0;
 }

@@ -1,12 +1,11 @@
 #include <ui/SelectModel.h>
 #include "./ui_selectmodel.h"
-#include <api/Api.h>
+#include <api/Endpoints.h>
 #include <ui/Dialog.h>
 
 // constructor
 SelectModel::SelectModel(QWidget *parent) 
     : QWidget(parent)
-    , _parent(parent)
     , _ui(new Ui::SelectModel)
     , _network_manager(new QNetworkAccessManager(this))
 {
@@ -20,11 +19,16 @@ SelectModel::SelectModel(QWidget *parent)
     QObject::connect( this, &SelectModel::model_was_confirmed_signal,
         this, &SelectModel::model_was_selected_slot );
     QObject::connect( _ui->refreshButton, &QPushButton::clicked,
-        this, &SelectModel::fetch_tags );
+        this, &SelectModel::fetch_tags );    
 }
 
 // destructor
 SelectModel::~SelectModel() { delete _ui; }
+
+
+// ----------------------------------------------------------------------------------
+// Slots
+// ----------------------------------------------------------------------------------
 
 /// @brief Creates a new dialog that asks to confirm to run the model selected
 void SelectModel::model_was_double_clicked_slot() {
@@ -33,7 +37,6 @@ void SelectModel::model_was_double_clicked_slot() {
     QString model_name = _model_list.at(index);
     QString message = "Load " + model_name + " ?";
     Dialog * dialog = new Dialog(message, this);
-    // dialog->setMinimumSize(_parent->minimumSize());
     connect(dialog, &Dialog::confirmed_signal, this, [this, dialog, model_name]() {
         dialog->close();
         emit model_was_confirmed_signal(model_name);
@@ -49,15 +52,6 @@ void SelectModel::model_was_double_clicked_slot() {
 // Slot
 void SelectModel::model_was_selected_slot(QString model_name) {
     emit model_was_selected_signal(model_name);
-}
-
-// private helper function
-void SelectModel::display_tags() {
-    if (_model_list.empty())
-        return ;
-    _ui->modelsList->clear();
-    for (QString tag: _model_list)
-        _ui->modelsList->addItem(tag);
 }
 
 // slot
@@ -82,13 +76,27 @@ void SelectModel::fetch_tags() {
                     display_tags();
                 }
                 else if (json_doc.isArray()) 
-                    qDebug() << "Error: json doc is array";
+                    qDebug() << "Chat::fetch_tags - Error: tags json doc is array";
                 else
-                    qDebug() << "Error: json doc neither array nor object";
+                    qDebug() << "Chat::fetch_tags - Error: tags json doc neither array nor object";
             }
         }
         else
-            qDebug() << "Error: request";
+            qDebug() << "Chat::fetch_tags - Error: Ollama server not responding. Tags could not be fetched";
         reply->deleteLater();
     });
+}
+
+
+// ----------------------------------------------------------------------------------
+// Private member functions
+// ----------------------------------------------------------------------------------
+
+/// @brief prints model tags from list to ui list widget
+void SelectModel::display_tags() {
+    if (_model_list.empty())
+        return ;
+    _ui->modelsList->clear();
+    for (QString tag: _model_list)
+        _ui->modelsList->addItem(tag);
 }

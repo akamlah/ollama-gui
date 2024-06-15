@@ -53,6 +53,7 @@ target_link_libraries(ollamagui PRIVATE Qt6::Widgets)
 target_link_libraries(ollamagui PRIVATE Qt6::Network)
 target_link_libraries(ollamagui PRIVATE Qt6::Gui)
 target_link_libraries(ollamagui PRIVATE Qt6::Core5Compat)
+
 # target_link_libraries(ollamagui PUBLIC ${API_HEADERS})
 
 # include(GNUInstallDirs)

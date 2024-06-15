@@ -4,7 +4,6 @@
 
 const Chat::MessageHtmlStrings Chat::_html = Chat::MessageHtmlStrings();
 
-
 Chat::Chat(QString model, QWidget *parent) 
     :  QWidget(parent)
     , _parent(parent) 
@@ -37,7 +36,7 @@ Chat::Chat(QString model, QWidget *parent)
         +  QString::fromUtf8(std::to_string(_conversations.size()).c_str()));
 
     // configure send prompt area signals and slots
-    QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+S"), _ui->PromptEditor);
+    QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+S"), _ui->PromptEditor); // fix this, doesn't work on macos
     connect(shortcut, SIGNAL(activated()), this, SLOT(send_prompt_slot()));
     connect(_ui->SendPromptButton, &QPushButton::clicked, this, [this]{ Chat::send_prompt_slot(); });
 
@@ -52,7 +51,7 @@ Chat::Chat(QString model, QWidget *parent)
 }
 
 Chat::~Chat() {
-    qDebug() << "----- DESTROY";
+    qDebug() << "Chat destructor - model: " << _model_name;
     delete _ui;
 }
 
@@ -80,6 +79,9 @@ void Chat::confirm_disconnect_slot() {
     dialog->exec();
 }
 
+/// @brief Slot called on prompt enter. Makes an api call to generete
+/// a reply and prints that to the screen in a fromatted way, and adds the 
+/// user's prompt above it.
 void Chat::send_prompt_slot()
 {
     if (!_ui->SendPromptButton->isEnabled()) {
@@ -112,7 +114,7 @@ void Chat::send_prompt_slot()
         while(reply->bytesAvailable()) {
             QByteArray response = reply->read(reply->bytesAvailable());
             QJsonObject json_obj = QJsonDocument::fromJson(response).object();
-            qDebug() << json_obj;
+            qDebug() << "Chat::send_prompt_slot - Response:\r\n" << json_obj;
             auto model_answer = json_obj.value("response").toString();
             if (_options.StreamEnabled)
                 _cursor->insertText(model_answer);
@@ -216,7 +218,7 @@ void Chat::get_title() {
 
     QJsonDocument doc(obj);
     QByteArray data = doc.toJson();
-    qDebug() << doc;
+    qDebug() << "Chat::get_title Response:\r\n" << doc;
     
     QNetworkReply *reply = _network_manager->post(request, data);
     QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
@@ -231,7 +233,7 @@ void Chat::get_title() {
         }
         else{
             QString err = reply->errorString();
-            qDebug() << "Error:" << err;
+            qDebug() << "Chat::get_title - Error:" << err;
         }
         reply->deleteLater();
     });

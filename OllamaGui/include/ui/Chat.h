@@ -11,13 +11,13 @@
 #include <QJsonArray>
 #include <QRestReply>
 #include <QNetworkAccessManager>
-#include <api/Api.h>
-
 #include <QGridLayout>
 #include <QtGui>
 #include <QLabel>
 #include <QTextDocument>
 #include <QAction>
+
+#include <api/Endpoints.h>
 
 namespace Ui {
     class Chat;

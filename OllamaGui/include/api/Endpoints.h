@@ -5,14 +5,6 @@
 #include <QObject>
 
 namespace Api {
-    // class Endpoints;
-    // class Request;
-// }
-/* 
-Content:
-    class Endpoints;
-    class Request;
-*/
 
 /*!
  * \class Endpoints
@@ -31,14 +23,14 @@ Content:
  * \endcode
  * 
  */
-class Endpoints: public QObject {
+class Endpoints {
 
     private:
 
         // api base url
         static QUrl ollama_base_url;
 
-        // endpoints are defined here
+        // endpoints are defined here (change to less hardcoded solution [ ! ])
         struct ollama_get_urls {
             QUrl tags_url = ollama_base_url.resolved(QUrl("api/tags"));
         };
@@ -60,7 +52,7 @@ class Endpoints: public QObject {
 
     protected:
 
-        Endpoints() { }
+        Endpoints();
 
     public:
 
@@ -75,15 +67,6 @@ class Endpoints: public QObject {
         const QUrl& get_base_url();
         void set_base_url(const QUrl& url);
 
-};
-
-
-/* 
-* Class that stores pre-formatted json objects for post requests
-*/
-class Request {
-    public:
-    
 };
 
 

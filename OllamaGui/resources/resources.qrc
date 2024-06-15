@@ -1,5 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-    <file>stylesheet.qss</file>
+    <file>styles/main_stylesheet.qss</file>
+    <file>api/request_model.json</file>
+    <file>api/response_model.json</file>
 </qresource>
 </RCC>

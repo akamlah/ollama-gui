@@ -1,7 +1,7 @@
 #include <ui/MainWindow.h>
 #include <ui/SelectModel.h>
 #include <ui/Chat.h>
-#include <api/Api.h>
+#include <api/Endpoints.h>
 
 // ----------------------------------------------------------------------------------
 //
@@ -53,9 +53,9 @@ MainWindow::MainWindow(QMainWindow *parent)
     QGridLayout *central_widget_layout = new QGridLayout(_central_widget);
     _central_widget->setLayout(central_widget_layout);
 
-    QBoxLayout * header_layout = this->setup_central_widget_navigation_area();
+    this->setup_central_widget_navigation_area();
 
-    central_widget_layout->addItem(header_layout, 0, 0);
+    central_widget_layout->addItem(_header_layout, 0, 0);
     central_widget_layout->addWidget(_stackedWidget, 2, 0);
 
     this->create_new_model_selection_view();
@@ -64,7 +64,9 @@ MainWindow::MainWindow(QMainWindow *parent)
 
 
 MainWindow::~MainWindow() {
-    delete _stackedWidget;
+    // as parent goes out of scope, all children widgets
+    // are deleted in qt -> no need for manual deallocation
+    // of all QWidget instances
 }
 
 
@@ -115,38 +117,44 @@ void MainWindow::close_conversation_request_slot() {
 /// @brief Tries to fetch stylesheet from resources.qrc (as in build system) and
 /// apply it to the application. Prints debug message on error.
 void MainWindow::source_stylesheet() {
-    QString stylesheet_rescource_path = ":/stylesheet.qss";
+    // path defined as realtive to qt resource file as defined in CMakeLists
+    QString stylesheet_rescource_path = ":/styles/main_stylesheet.qss";
     QFile file(stylesheet_rescource_path);
     if (!file.open(QFile::ReadOnly))
-        qDebug() << "Error: could not open file " << stylesheet_rescource_path;
-    QString style_sheet_as_string = QLatin1String(file.readAll());
-    qApp->setStyleSheet(style_sheet_as_string);
+        qDebug() << "MainWindow::source_stylesheet - Error: could not open file " 
+            << stylesheet_rescource_path;
+    else {
+        QString style_sheet_as_string = QLatin1String(file.readAll());
+        qApp->setStyleSheet(style_sheet_as_string);
+    }
 }
 
 
 /// @brief Created a new layout containing all the elements in the navigation
 /// area in the main window and necessary connections for signals. 
 /// @return header layout
-QBoxLayout* MainWindow::setup_central_widget_navigation_area() {
+void MainWindow::setup_central_widget_navigation_area() {
 
-    QHBoxLayout *header_layout = new QHBoxLayout();
+    _header_layout = new QHBoxLayout();
 
+    // Url Label
     QLabel *url_label = new QLabel(_central_widget);
     url_label->setObjectName("UrlInstancelabel");
     url_label->setText( "Currentnly connected to ollama server instance at: " +
         Api::Endpoints::get_endpoints()->get_base_url().toString() );
     url_label->setWordWrap(true);
-    header_layout->addWidget(url_label, 0);
+    _header_layout->addWidget(url_label, 0);
 
+    // Settings Button
     QPushButton *settings_btn = new QPushButton(_central_widget);
     settings_btn->setText("Settings");
-    header_layout->addWidget(settings_btn, 1, Qt::AlignRight);
+    _header_layout->addWidget(settings_btn, 1, Qt::AlignRight);
 
+    // Navigation Button
     _nav_button = new QPushButton(_central_widget);
     _nav_button->setObjectName("NavButton");
-    header_layout->addWidget(_nav_button, 2, Qt::AlignRight);
+    _header_layout->addWidget(_nav_button, 2, Qt::AlignRight);
     _nav_button->hide();
-
     connect(_nav_button, &QPushButton::clicked, this, [this](){
         if (_stackedWidget->currentIndex() == 0) {
             _nav_button->setText("New Model");
@@ -158,10 +166,10 @@ QBoxLayout* MainWindow::setup_central_widget_navigation_area() {
         }
     });
 
-    header_layout->setStretch(0, 20);
-    header_layout->setStretch(1, 1);
-    header_layout->setStretch(2, 1);
-    return header_layout;
+    // Configure Layout stretch
+    _header_layout->setStretch(0, 20);
+    _header_layout->setStretch(1, 1);
+    _header_layout->setStretch(2, 1);
 }
 
 /// @brief Instantiates the model selection view and adds it to the stack
