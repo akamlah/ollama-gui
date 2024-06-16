@@ -2,7 +2,8 @@
 
 namespace Api {
 
-Request::Request() {
+Request::Request(): QNetworkRequest() {
+
 }
 
 Request::~Request(){

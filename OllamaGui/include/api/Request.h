@@ -1,9 +1,14 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 
+#include <QNetworkRequest>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+
 namespace Api {
 
-class Request {
+class Request: public QNetworkRequest {
 
     public:
 

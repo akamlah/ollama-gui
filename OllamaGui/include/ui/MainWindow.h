@@ -3,12 +3,13 @@
 
 #include <QMainWindow>
 #include <QPushButton>
-#include <QProcess>
+// #include <QProcess>
 #include <QApplication>
 #include <QStackedWidget>
 #include <QGridLayout>
 #include <QTabWidget>
 #include <QFile>
+#include <QLabel>
 
 #include <unistd.h>
 

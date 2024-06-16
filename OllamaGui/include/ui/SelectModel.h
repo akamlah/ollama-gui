@@ -2,14 +2,13 @@
 #define OLLAMAGUI_UI_SelectModel_H
 
 #include <QWidget>
+#include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QRestReply>
-#include <QNetworkAccessManager>
 #include <QDialog>
-#include <QGridLayout>
 #include <vector>
 
 namespace Ui {

@@ -2,21 +2,20 @@
 #define OLLAMAGUI_UI_Chat_H
 
 #include <QWidget>
-#include <QJsonObject>
-#include <vector>
-#include <QWidget>
+#include <QNetworkAccessManager>
+#include <QTextDocument>
+#include <QShortcut>
+
 #include <QNetworkReply>
+
+#include <QRestReply>
+
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <QRestReply>
-#include <QNetworkAccessManager>
-#include <QGridLayout>
-#include <QtGui>
-#include <QLabel>
-#include <QTextDocument>
-#include <QAction>
 
+
+#include <vector>
 #include <api/Endpoints.h>
 
 namespace Ui {
