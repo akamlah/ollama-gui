@@ -160,7 +160,6 @@ void Chat::parse_tag() {
 void Chat::load_model_request() {
     this->wrap_set_enabled_send_button(false);
     _ui->ShortctuLabel->setText("Loading Model...");
-    // _ui->SendPromptButton->setText("Loading Model");
 
     QNetworkRequest request;
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");

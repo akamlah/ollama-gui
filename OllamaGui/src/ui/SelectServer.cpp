@@ -35,6 +35,7 @@ SelectServer::SelectServer(QWidget *parent)
     connect(_ui->ConnectButton, &QPushButton::clicked, this, [this](){
         _ui->StartSessionButton->setDisabled(true);
         _ui->RefreshButton->setDisabled(true);
+        _started_editing = false;
         if (!Api::Endpoints::get_endpoints()->set_base_url(_ui->ChangeUrl->toPlainText())) {
             _ui->InvalidUrlLabel->setText("Invalid URL" + _ui->ChangeUrl->toPlainText());
             _ui->InvalidUrlLabel->show();
@@ -86,10 +87,10 @@ SelectServer::~SelectServer() {
     delete _ui;
 }
 
-
 // ----------------------------------------------------------------------------------
 // Private member functions
 // ----------------------------------------------------------------------------------
+
 
 void SelectServer::try_fetch_tags() {
 
@@ -109,7 +110,8 @@ void SelectServer::try_fetch_tags() {
                 if (json_doc.isObject()) {
                     QJsonObject json_obj = json_doc.object();
                     QJsonArray models = json_obj.value("models").toArray();
-                    _ui->AvailableModelsLabel->setText("Models available on " + Api::Endpoints::get_endpoints()->get_base_url().toString() + ":");
+                    _ui->AvailableModelsLabel->setText("Models available on " 
+                        + Api::Endpoints::get_endpoints()->get_base_url().toString() + ":");
                     for (int i = 0; i < models.size(); i++) {
                         QJsonObject model = models[i].toObject();
                         _ui->modelPreview->addItem(model.value("name").toString());
@@ -128,7 +130,8 @@ void SelectServer::try_fetch_tags() {
             }
         }
         else {
-            _ui->AvailableModelsLabel->setText("No connection on " + Api::Endpoints::get_endpoints()->get_base_url().toString());
+            _ui->AvailableModelsLabel->setText("No connection on " 
+                + Api::Endpoints::get_endpoints()->get_base_url().toString());
             qDebug() << "SelectServer::try_fetch_tags - Error: Ollama server not responding. Tags could not be fetched";
         }
         reply->deleteLater();

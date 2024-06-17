@@ -68,7 +68,6 @@ private:
 private slots:
     void send_prompt_slot();
     void confirm_disconnect_slot();
-    // void createMessageWidget(QWidget *widget, QString sender, QString content);
 
 signals:
     void close_conversation_request_signal();
@@ -79,24 +78,7 @@ private:
     void wrap_set_enabled_send_button(bool setEnabled);
     void get_title();
     void flush_prompt_editor_to_message_display(const QString& prompt);
-    // void add_message_item(MessageWidget::Role role, QString sender, QString content);
-
-
-
 
 };
 
 #endif // OLLAMAGUI_UI_Chat_H
-// public:
-
-    // class MessageElement: public QWidget {
-    // public:
-    //     typedef enum role {
-    //         FromUser,
-    //         FromModel
-    //     } Role ;
-    // public:
-    //     MessageWidget(Role role, QString sender, QString content, QWidget *parent = nullptr);
-    //     ~MessageWidget();
-    //     QLabel *_contentLabel;
-    // };
