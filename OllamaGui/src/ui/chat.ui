@@ -150,7 +150,7 @@
                                     <item>
                                         <widget class="QLabel" name="ShortctuLabel">
                                             <property name="text">
-                                                <string>[Ctrl/Cmd + S] to send</string>
+                                                <string></string>
                                             </property>
                                         </widget>
                                     </item>

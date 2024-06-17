@@ -16,8 +16,10 @@ Chat::Chat(QString model, QWidget *parent)
     // setup ui 
     _ui->setupUi(this);
     this->setObjectName("chatt");
+    
     _ui->MessageDisplay->setDocument(_doc);
     _ui->MessageDisplay->setReadOnly(true);
+
     _ui->WordStreamExplanationLabel->setWordWrap(true);
     _ui->PromptEditor->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
@@ -120,6 +122,7 @@ void Chat::send_prompt_slot()
                 _cursor->insertText(model_answer);
             else
                 _cursor->insertMarkdown(model_answer);
+            _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->height());
         }
     });
 
@@ -152,7 +155,8 @@ void Chat::parse_tag() {
 
 void Chat::load_model_request() {
     this->wrap_set_enabled_send_button(false);
-    _ui->SendPromptButton->setText("Loading Model");
+    _ui->ShortctuLabel->setText("Loading Model...");
+    // _ui->SendPromptButton->setText("Loading Model");
 
     QNetworkRequest request;
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -194,11 +198,15 @@ void Chat::flush_prompt_editor_to_message_display(const QString& prompt) {
 void Chat::wrap_set_enabled_send_button(bool setEnabled) {
     if (setEnabled) {
         _ui->SendPromptButton->setEnabled(true);
-        _ui->SendPromptButton->setText("Send Prompt");
+        _ui->ShortctuLabel->setText("[Ctrl + S]/[Cmd + S] to send");
+
+        // _ui->SendPromptButton->setText("Send Prompt");
     }
     else {
         _ui->SendPromptButton->setEnabled(false);
-        _ui->SendPromptButton->setText("Loading Reply ... ");
+        _ui->ShortctuLabel->setText("Loading Reply ... ");
+
+        // _ui->SendPromptButton->setText("Loading Reply ... ");
     }
 }
 

@@ -5,6 +5,7 @@
 #include <QNetworkAccessManager>
 #include <QTextDocument>
 #include <QShortcut>
+#include <QScrollBar>
 
 #include <QNetworkReply>
 

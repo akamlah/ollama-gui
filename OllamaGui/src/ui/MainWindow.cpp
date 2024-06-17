@@ -48,7 +48,9 @@ MainWindow::MainWindow(QMainWindow *parent)
     // ollama_run.start("ollama");
 
     source_stylesheet();
-    setMinimumSize(960, 540);
+    // setMinimumSize(960, 540);
+    auto screen = this->screen();
+    setMinimumSize(screen->size() / 2);
 
     setCentralWidget(_central_widget);
 

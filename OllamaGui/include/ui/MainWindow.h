@@ -10,6 +10,7 @@
 #include <QTabWidget>
 #include <QFile>
 #include <QLabel>
+#include <QScreen>
 
 #include <unistd.h>
 
