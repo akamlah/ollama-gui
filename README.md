@@ -19,7 +19,7 @@ $ cmake --build .
 $ ./ollamagui
 ```  
 
-The application tries to connect to an ollama server instance on ```127.0.0.1``` port ```11434``` as a default, this can be changed in the UI.
+The application will ask for the desired server instance to connect to on opening. The default is localhost on port 11434. If you wid=sh to connect to a different host within you local network, note that the OLLAMA_HOST environmental variable has to be modified on the host machine.
 
 ------
 
