@@ -93,11 +93,13 @@ void Chat::send_prompt_slot()
     _qas.push_back(prompt);
     this->wrap_set_enabled_send_button(false);
     this->flush_prompt_editor_to_message_display(prompt);
+    _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->verticalScrollBar()->maximum());
 
     // add model name to display
     _cursor->insertHtml(Chat::_html.model_name % _model_name);
     _cursor->insertHtml(Chat::_html.reset);
     _cursor->insertText("\r\n");
+    _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->verticalScrollBar()->maximum());
 
     QNetworkRequest request;
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -122,8 +124,9 @@ void Chat::send_prompt_slot()
                 _cursor->insertText(model_answer);
             else
                 _cursor->insertMarkdown(model_answer);
-            _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->height());
+            _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->verticalScrollBar()->maximum());
         }
+        _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->verticalScrollBar()->maximum());
     });
 
     QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
@@ -132,6 +135,7 @@ void Chat::send_prompt_slot()
         _cursor->insertText("\r\n");
         reply->deleteLater();
         this->wrap_set_enabled_send_button(true);
+        _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->verticalScrollBar()->maximum());
     });
 
 }
