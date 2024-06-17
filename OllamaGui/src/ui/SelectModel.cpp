@@ -11,7 +11,6 @@ SelectModel::SelectModel(QWidget *parent)
 {
     _ui->setupUi(this);
     // [ ! ] Add management of case server not responding at first api call
-    fetch_tags();
 
     // connect slots and signals
     QObject::connect( _ui->modelsList, &QListWidget::itemDoubleClicked,
@@ -24,7 +23,6 @@ SelectModel::SelectModel(QWidget *parent)
 
 // destructor
 SelectModel::~SelectModel() { delete _ui; }
-
 
 // ----------------------------------------------------------------------------------
 // Slots
@@ -56,6 +54,10 @@ void SelectModel::model_was_selected_slot(QString model_name) {
 
 // slot
 void SelectModel::fetch_tags() {
+    qDebug() << "fetching tags";
+    _ui->currentlyLoadedLabel->setText("Loading...");
+    _ui->clickToSelectLabel->setText("");
+    _ui->refreshButton->setDisabled(true);
     _model_list.clear();
     QNetworkRequest request;
     request.setUrl(Api::Endpoints::get_endpoints()->api_urls_get.tags_url);
@@ -63,6 +65,8 @@ void SelectModel::fetch_tags() {
     QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
         QRestReply restReply(reply);
         if (restReply.isSuccess()) {
+            _ui->clickToSelectLabel->setText("(Double click to select)");
+            _ui->currentlyLoadedLabel->setText("Currently available models");
             QByteArray response = reply->readAll();
             if (!response.isEmpty()) {
                 QJsonDocument json_doc =  QJsonDocument::fromJson(response);
@@ -75,14 +79,22 @@ void SelectModel::fetch_tags() {
                     }
                     display_tags();
                 }
-                else if (json_doc.isArray()) 
+                else if (json_doc.isArray()) {
                     qDebug() << "Chat::fetch_tags - Error: tags json doc is array";
-                else
+                    _ui->currentlyLoadedLabel->setText("An error occurred");
+                }
+                else {
                     qDebug() << "Chat::fetch_tags - Error: tags json doc neither array nor object";
+                    _ui->currentlyLoadedLabel->setText("An error occurred");
+                }
             }
         }
-        else
+        else {
+            _ui->currentlyLoadedLabel->setText("No connection");
             qDebug() << "Chat::fetch_tags - Error: Ollama server not responding. Tags could not be fetched";
+
+        }
+        _ui->refreshButton->setDisabled(false);
         reply->deleteLater();
     });
 }

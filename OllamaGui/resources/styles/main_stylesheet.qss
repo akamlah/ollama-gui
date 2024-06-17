@@ -59,6 +59,8 @@ QPushButton::hover {
 QPushButton[objectName^="OKButton"]::hover 
 , QPushButton[objectName^="SendPromptButton"]::hover
 , QPushButton[objectName^="NavButton"]::hover
+, QPushButton[objectName^="ConfirmUrlButton"]::hover
+, QPushButton[objectName^="StartSessionButton"]::hover
 {
     background-color: #2f725e;
 }
@@ -105,16 +107,28 @@ QLabel {
 QLabel[objectName^="currentlyLoadedLabel"] {
     color: #dadada;
 }
+
 QLabel[objectName^="clickToSelectLabel"] {
     color: #606060;
     padding-top: 0px;
     margin-top: 0px;
 }
+
+/* mute labels */
 QLabel[objectName^="UrlInstancelabel"]
 , QLabel[objectName^="ShortctuLabel"]
 , QLabel[objectName^="WordStreamExplanationLabel"]
+, QLabel[objectName^="InfoLabel2"]
+, QLabel[objectName^="InfoLabel3"]
+, QLabel[objectName^="CurrentUrlLabel"]
 {
     color: #6b6b6b;
+}
+
+QLabel[objectName^="WelcomeLabel"]
+{
+    color: #7058c0;
+    font-weight: bold;
 }
 
 QLabel[objectName^="WordStreamExplanationLabel"]
@@ -150,27 +164,37 @@ QCheckBox::indicator::checked
     Lists
 ---------------*/
 
-/* Default */
-QListWidget {
-    background: #181818;
-    /* color: #d0d0d0; */
+
+/* Model list in select server view */
+
+QListWidget[objectName^="modelPreview"] {
+    background: #202020;
+    border: none;
+}
+QListWidget[objectName^="modelPreview"]::item {
+    color: #6b6b6b;
 }
 
-QListWidget {
+
+/* model list in Select model view */
+QListWidget[objectName^="modelsList"] {
+    background: #171717;
+    border-radius: .4em;
+    color: #d0d0d0;
+    border: none;
+}
+
+QListWidget[objectName^="modelsList"] {
     padding: 6px;
 }
-QListWidget::item {
-    /* background: #171717; */
-    /* border: none; */
+QListWidget[objectName^="modelsList"]::item {
     padding: 10px;
     border-radius: .4em;
 }
-QListWidget::item:hover
-, QListWidget::item:selected
-, QListWidget::item:clicked
-/*, QListWidget::item:checked */
-/*, QListWidget::item:focus */
-, QListWidget::item:selected:hover
+QListWidget[objectName^="modelsList"]::item:hover
+, QListWidget[objectName^="modelsList"]::item:selected
+/* , QListWidget[objectName^="modelsList"]::item:clicked */
+/* , QListWidget[objectName^="modelsList"]::item:selected:hover */
 {
     background: #534091;
     /* background: transparent; */
@@ -193,6 +217,13 @@ QPlainTextEdit[objectName^="PromptEditor"] {
     background-color: #171717;
     color: #d0d0d0;
     padding: 1em;
+}
+
+QPlainTextEdit[objectName^="ChangeUrl"] {
+    border: 1.5px solid #303030;
+    border-radius: .4em;
+    background: transparent;
+    padding-left: .5em;
 }
 
 /* --------------

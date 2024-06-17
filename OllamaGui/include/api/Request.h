@@ -5,6 +5,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QString>
+#include <vector>
 
 namespace Api {
 
@@ -18,6 +20,8 @@ class Request: public QNetworkRequest {
         // inhibit copy
         Request(Request& other) = delete;
         Request& operator=(Request& other) = delete;
+
+        std::vector<QString> get_model_list();
 
 };
 

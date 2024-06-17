@@ -29,8 +29,9 @@ public:
     MainWindow(QMainWindow *parent = nullptr);
     ~MainWindow();
 
-public slots:
+private slots:
 
+    void server_was_selected_slot();
     void model_was_selected_slot(QString name);
     void close_conversation_request_slot();
 
@@ -39,15 +40,25 @@ private:
     QWidget *_central_widget;
     QStackedWidget *_stackedWidget;
     QTabWidget * _tabWidget;
-    QPushButton *_nav_button;
+
     int _font_size;
+    
     QBoxLayout * _header_layout;
+    QLabel * _url_label;
+    QPushButton *_nav_button;
+
+    // for more readable indexing on stacked widget
+    enum StackedViews {
+        SelectServerView = 0,
+        SelectModelView,
+        ChatView,
+    };
 
 private:
 
     void source_stylesheet();
-    void setup_central_widget_navigation_area();
-    void create_new_model_selection_view();
+    void configure_header_layout();
+    void configure_stacked_widget();
     void setup_zoomin_zoomout_shortcuts();
 
 };

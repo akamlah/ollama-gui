@@ -145,15 +145,12 @@
                             <item>
                                 <widget class="QTextEdit" name="MessageDisplay"/>
                             </item>
-                            <!-- <item>
-                                <widget class="QListWidget" name="MessageDisplayListWidget"/>
-                            </item> -->
                             <item>
                                 <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="5,1">
                                     <item>
                                         <widget class="QLabel" name="ShortctuLabel">
                                             <property name="text">
-                                                <string>[Ctrl + S] to send</string>
+                                                <string>[Ctrl/Cmd + S] to send</string>
                                             </property>
                                         </widget>
                                     </item>

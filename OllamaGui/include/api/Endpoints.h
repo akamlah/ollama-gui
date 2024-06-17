@@ -3,6 +3,7 @@
 
 #include <QUrl>
 #include <QObject>
+#include <QString>
 
 namespace Api {
 
@@ -28,23 +29,38 @@ class Endpoints {
     private:
 
         // api base url
-        static QUrl ollama_base_url;
+        static const QUrl ollama_default_base_url;
+        static QUrl ollama_current_base_url;
 
         // endpoints are defined here (change to less hardcoded solution [ ! ])
         struct ollama_get_urls {
-            QUrl tags_url = ollama_base_url.resolved(QUrl("api/tags"));
+            QUrl tags_url;
+            ollama_get_urls() {
+                refresh();
+            }
+            void refresh() {
+                tags_url = ollama_current_base_url.resolved(QUrl("api/tags"));
+            }
         };
         struct ollama_post_urls {
-            QUrl generate_url = ollama_base_url.resolved(QUrl("api/generate"));
-            QUrl chat_url = ollama_base_url.resolved(QUrl("api/chat"));
+            QUrl generate_url;
+            QUrl chat_url;
+            ollama_post_urls() {
+                refresh();
+            }
+            void refresh() {
+                generate_url = ollama_current_base_url.resolved(QUrl("api/generate"));
+                chat_url = ollama_current_base_url.resolved(QUrl("api/chat"));
+            }
         };
 
     public:
         
         typedef struct ollama_get_urls t_ollama_get_urls;
         typedef struct ollama_post_urls t_ollama_post_urls;
-        static const t_ollama_get_urls api_urls_get;
-        static const t_ollama_post_urls api_urls_post;
+
+        static t_ollama_get_urls api_urls_get;
+        static t_ollama_post_urls api_urls_post;
 
     protected:
 
@@ -64,8 +80,10 @@ class Endpoints {
         static Endpoints* get_endpoints();
 
         // get and set base url
+        const QUrl& get_default_base_url();
         const QUrl& get_base_url();
-        void set_base_url(const QUrl& url);
+        void reset_base_url_to_default();
+        int set_base_url(const QString& url);
 
 };
 

@@ -23,7 +23,7 @@
        <item>
         <widget class="QLabel" name="currentlyLoadedLabel">
          <property name="text">
-          <string>Currently available models</string>
+          <string></string>
          </property>
         </widget>
        </item>
@@ -42,7 +42,7 @@
        <item>
         <widget class="QLabel" name="clickToSelectLabel">
          <property name="text">
-          <string>(Double click to select)</string>
+          <string></string>
          </property>
         </widget>
        </item>

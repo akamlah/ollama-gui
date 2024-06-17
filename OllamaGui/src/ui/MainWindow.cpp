@@ -1,6 +1,7 @@
 #include <ui/MainWindow.h>
 #include <ui/SelectModel.h>
 #include <ui/Chat.h>
+#include <ui/SelectServer.h>
 #include <api/Endpoints.h>
 
 // ----------------------------------------------------------------------------------
@@ -21,10 +22,10 @@
 //  |  | |   stacked widget             | |     |
 //  |  | |                              | |     |
 //  |  | |                           +---------------Stacked Widget = {
-//  |  | -------------------------------- |     |        SelectModel view (index 0),
-//  |  |__________________________________|     |        Chat Tab Widget (index 1)
-//  |___________________________________________|    }
-//
+//  |  | -------------------------------- |     |        SelectServer view (index 0) only on bootup,
+//  |  |__________________________________|     |        SelectModel view (index 1),    <---|  
+//  |___________________________________________|        Chat Tab Widget view (index 3) <---|  switching
+//                                                   }
 //
 //                                       ( Tab Widget = Chat instances )
 //
@@ -46,20 +47,27 @@ MainWindow::MainWindow(QMainWindow *parent)
     // QProcess ollama_run;
     // ollama_run.start("ollama");
 
-    this->source_stylesheet();
-    this->setMinimumSize(960, 540);
-    this->setCentralWidget(_central_widget);
+    source_stylesheet();
+    setMinimumSize(960, 540);
 
+    setCentralWidget(_central_widget);
+
+    // configure central Widget layout
     QGridLayout *central_widget_layout = new QGridLayout(_central_widget);
     _central_widget->setLayout(central_widget_layout);
 
-    this->setup_central_widget_navigation_area();
-
+    // configure navigation area (including actions)
+    configure_header_layout();
     central_widget_layout->addItem(_header_layout, 0, 0);
-    central_widget_layout->addWidget(_stackedWidget, 2, 0);
 
-    this->create_new_model_selection_view();
-    this->setup_zoomin_zoomout_shortcuts();
+    // add stacked widget containing all app views to central widget
+    central_widget_layout->addWidget(_stackedWidget, 1, 0);
+
+    // configure stacked vidget's model selection view and set that to current index
+    configure_stacked_widget();
+
+    // setup shortcuts for zoom
+    setup_zoomin_zoomout_shortcuts();
 }
 
 
@@ -74,6 +82,14 @@ MainWindow::~MainWindow() {
 // Slots
 // ----------------------------------------------------------------------------------
 
+void MainWindow::server_was_selected_slot() {
+    _stackedWidget->setCurrentIndex(StackedViews::SelectModelView);
+    _url_label->show();
+    _url_label->setText( "Currentnly connected to ollama server instance at: " +
+        Api::Endpoints::get_endpoints()->get_base_url().toString() );
+}
+
+
 /// @brief If model already opened, send back to that tab, elsecreate a new chat panel,
 /// connect the "Disconnect" button from the chat to the main window and add it as
 /// a tab. Then page back to chat view
@@ -82,7 +98,7 @@ void MainWindow::model_was_selected_slot(QString name) {
     for (int i = 0; i < _tabWidget->count(); i++) {
         if (_tabWidget->tabText(i) == name) {
             _tabWidget->setCurrentIndex(i);
-            _stackedWidget->setCurrentIndex(1);
+            _stackedWidget->setCurrentIndex(StackedViews::ChatView);
             _nav_button->setText("New Model");
             return ;
         }
@@ -92,7 +108,7 @@ void MainWindow::model_was_selected_slot(QString name) {
     _tabWidget->setCurrentIndex(_tabWidget->count() - 1);
     _nav_button->show();
     _nav_button->setText("New Model");
-    _stackedWidget->setCurrentIndex(1);
+    _stackedWidget->setCurrentIndex(StackedViews::ChatView);
     QObject::connect(
         chat,
         SIGNAL(close_conversation_request_signal()),
@@ -101,13 +117,11 @@ void MainWindow::model_was_selected_slot(QString name) {
     );
 }
 
-
 /// @brief call chat object destructor and remove tab from tabstack
 void MainWindow::close_conversation_request_slot() {
     _tabWidget->currentWidget()->deleteLater();
     _tabWidget->removeTab(_tabWidget->currentIndex());
 }
-
 
 // ----------------------------------------------------------------------------------
 // Private member functions for initial setup
@@ -133,36 +147,30 @@ void MainWindow::source_stylesheet() {
 /// @brief Created a new layout containing all the elements in the navigation
 /// area in the main window and necessary connections for signals. 
 /// @return header layout
-void MainWindow::setup_central_widget_navigation_area() {
+void MainWindow::configure_header_layout() {
 
     _header_layout = new QHBoxLayout();
 
     // Url Label
-    QLabel *url_label = new QLabel(_central_widget);
-    url_label->setObjectName("UrlInstancelabel");
-    url_label->setText( "Currentnly connected to ollama server instance at: " +
-        Api::Endpoints::get_endpoints()->get_base_url().toString() );
-    url_label->setWordWrap(true);
-    _header_layout->addWidget(url_label, 0);
-
-    // Settings Button
-    QPushButton *settings_btn = new QPushButton(_central_widget);
-    settings_btn->setText("Settings");
-    _header_layout->addWidget(settings_btn, 1, Qt::AlignRight);
-
+    _url_label = new QLabel(_central_widget);
+    _url_label->setObjectName("UrlInstancelabel");
+    _url_label->setWordWrap(true);
+    _header_layout->addWidget(_url_label, 0);
+    _url_label->hide();
+    
     // Navigation Button
     _nav_button = new QPushButton(_central_widget);
     _nav_button->setObjectName("NavButton");
     _header_layout->addWidget(_nav_button, 2, Qt::AlignRight);
     _nav_button->hide();
     connect(_nav_button, &QPushButton::clicked, this, [this](){
-        if (_stackedWidget->currentIndex() == 0) {
+        if (_stackedWidget->currentIndex() == StackedViews::SelectModelView) {
+            _stackedWidget->setCurrentIndex(StackedViews::ChatView);
             _nav_button->setText("New Model");
-            _stackedWidget->setCurrentIndex(1); 
         }
         else {
+            _stackedWidget->setCurrentIndex(StackedViews::SelectModelView);
             _nav_button->setText("Back to open conversations");
-            _stackedWidget->setCurrentIndex(0); 
         }
     });
 
@@ -172,22 +180,48 @@ void MainWindow::setup_central_widget_navigation_area() {
     _header_layout->setStretch(2, 1);
 }
 
-/// @brief Instantiates the model selection view and adds it to the stack
-void MainWindow::create_new_model_selection_view() {
 
+/// @brief Instantiates the SelectServer view, Model Selection View and Tab Widget
+/// that will contain the chats, sets the initial view to Server Select, and
+/// connects all signals and slots, essantialy the core logic of all the main component's
+/// interactions.
+void MainWindow::configure_stacked_widget() {
+
+    // settings view
+    SelectServer * server_select_widget = new SelectServer(_central_widget);
+    _stackedWidget->addWidget(server_select_widget);
+    QObject::connect(
+        server_select_widget, 
+        SIGNAL(server_was_selected_signal()),
+        this,
+        SLOT(server_was_selected_slot())
+    );
+
+    // select model view
     SelectModel *select_model = new SelectModel(_central_widget);
     _stackedWidget->addWidget(select_model);
-    _stackedWidget->addWidget(_tabWidget);
-    _stackedWidget->setCurrentIndex(0);
-
     QObject::connect(
         select_model, 
         SIGNAL(model_was_selected_signal(QString)),
         this,
         SLOT(model_was_selected_slot(QString))
     );
+
+    QObject::connect(
+        server_select_widget, 
+        SIGNAL(server_was_selected_signal()),
+        select_model,
+        SLOT(fetch_tags())
+    );
+
+    // chat tabs
+    _stackedWidget->addWidget(_tabWidget);
+
+    // set select model to current view
+    _stackedWidget->setCurrentIndex(StackedViews::SelectServerView);
 }
 
+/// @brief Confugures Ctrl/Cmd + '+'/'-' as zoom in/out shortcuts for the entire ui
 void MainWindow::setup_zoomin_zoomout_shortcuts() {
     int default_font_size = this->fontInfo().pixelSize();
     if (default_font_size > 4 && default_font_size < 40) {

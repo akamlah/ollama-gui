@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SelectServer</class>
+ <widget class="QWidget" name="SelectServer">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Settings</string>
+  </property>
+
+  <!-- <layout class="QHBoxLayout" name="horizontalLayout_245" >
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_089">
+
+      <item>
+
+        <widget class="QGroupBox" name="SettingsPageGroup">
+              <property name="title">
+                  <string>Settings</string>
+              </property> -->
+              <layout class="QVBoxLayout" name="verticalLayout_2768">
+
+                  <item>
+                      <widget class="QLabel" name="WelcomeLabel">
+                          <property name="text">
+                              <string>Welcome to OllamaGUI!</string>
+                          </property>
+                      </widget>
+                  </item>
+                    <item>
+                      <widget class="QLabel" name="rgrstvjkytu">
+                          <property name="text">
+                              <string></string>
+                          </property>
+                      </widget>
+                  </item>
+                  <item>
+                      <widget class="QLabel" name="InfoLabel">
+                          <property name="text">
+                              <string>Enter a server address or try the default (localhost port 11434) and click on 'Connect'.</string>
+                          </property>
+                      </widget>
+                  </item>
+                  <item>
+                      <widget class="QLabel" name="InfoLabel2">
+                          <property name="text">
+                              <string>If the connection is successful and the server has an ollama instance running, all models on that server will be listed in the preview below.</string>
+                          </property>
+                      </widget>
+                  </item>
+                  <item>
+                      <widget class="QLabel" name="InfoLabel3">
+                          <property name="text">
+                              <string>Note that to connect to other hosts on you network you have to change OLLAMA_HOST to 0.0.0.0 in your host's environment to access the server.</string>
+                          </property>
+                      </widget>
+                  </item>
+                  <item>
+                      <widget class="QLabel" name="InfoLabel4">
+                          <property name="text">
+                              <string>Select 'Start Session' to start a session on you server of choice.</string>
+                          </property>
+                      </widget>
+                  </item>
+                  <item>
+                      <widget class="QLabel" name="rgrstjkytu">
+                          <property name="text">
+                              <string></string>
+                          </property>
+                      </widget>
+                  </item>
+                  <item>
+                      <widget class="QLabel" name="CurrentUrlLabel">
+                          <property name="text">
+                              <string>Enter ollama server Url</string>
+                          </property>
+                      </widget>
+                  </item>
+
+                  <item>
+                      <widget class="QPlainTextEdit" name="ChangeUrl"/>
+                  </item>
+                  <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_24765" stretch="5, 1, 1">
+                        <item>
+
+                          <widget class="QLabel" name="vdryj">
+                              <property name="text">
+                                  <string> </string>
+                              </property>
+                          </widget>
+                        </item>
+                        <item>
+                        <widget class="QPushButton" name="ResetToDefaultUrlButton">
+                            <property name="text">
+                                <string>Reset to default</string>
+                            </property>
+                        </widget>
+                      </item>
+                        <item>
+                        <widget class="QPushButton" name="ConnectButton">
+                            <property name="text">
+                                <string>Connect</string>
+                            </property>
+                        </widget>
+                      </item>
+                      
+                    </layout>
+                  </item>
+                        <item>
+
+                          <widget class="QLabel" name="InvalidUrlLabel">
+                              <property name="text">
+                                  <string> </string>
+                              </property>
+                          </widget>
+                        </item>
+                  <item>
+                  
+                      <layout class="QHBoxLayout" name="horizontalLayout_2475" stretch="10, 1">
+                        <item>
+
+                          <widget class="QLabel" name="AvailableModelsLabel">
+                              <property name="text">
+                                  <string> </string>
+                              </property>
+                          </widget>
+                        </item>
+                        <item>
+                        <widget class="QPushButton" name="RefreshButton">
+                            <property name="text">
+                                <string>Refresh</string>
+                            </property>
+                        </widget>
+                      </item>
+
+                    </layout>
+                  </item>
+
+
+                        <item>
+                            <widget class="QListWidget" name="modelPreview"/>
+                        </item>
+                  <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_2476795" stretch="10, 1">
+                        <item>
+
+                          <widget class="QLabel" name="gfjbkni">
+                              <property name="text">
+                                  <string></string>
+                              </property>
+                          </widget>
+                        </item>
+                        <item>
+                        <widget class="QPushButton" name="StartSessionButton">
+                            <property name="text">
+                                <string>Start Session</string>
+                            </property>
+                        </widget>
+                      </item>
+
+                    </layout>
+                  </item>
+
+              </layout>
+          <!-- </widget> -->
+      <!-- </item> -->
+
+    <!-- </layout> -->
+   <!-- </item> -->
+  <!-- </layout> -->
+ </widget>
+
+</ui>
