@@ -10,17 +10,26 @@ SelectServer::SelectServer(QWidget *parent)
 {
     // setup ui 
     _ui->setupUi(this);
-
+    _ui->WelcomeLabel->setWordWrap(true);
     _ui->InfoLabel->setWordWrap(true);
+    _ui->InfoLabel2->setWordWrap(true);
+    _ui->InfoLabel3->setWordWrap(true);
+    _ui->InfoLabel4->setWordWrap(true);
+    _ui->CurrentUrlLabel->setWordWrap(true);
+    _ui->InvalidUrlLabel->setWordWrap(true);
+    _ui->CurrentUrlLabel->setWordWrap(true);
+    _ui->AvailableModelsLabel->setWordWrap(true);
+
+    _ui->InvalidUrlLabel->hide();
+    
+    _ui->ResetToDefaultUrlButton->setDisabled(true);
+    _ui->StartSessionButton->setDisabled(true);
+    _ui->RefreshButton->setDisabled(true);
 
     //  [ ! ] TODO: not llow newline character in text edit and give invalid url error
     auto cursor = _ui->ChangeUrl->textCursor();
     cursor.insertText(Api::Endpoints::get_endpoints()->get_base_url().toString());
-    _ui->ChangeUrl->setFixedHeight(_ui->ChangeUrl->height());
-    _ui->InvalidUrlLabel->hide();
-    _ui->ResetToDefaultUrlButton->setDisabled(true);
-    _ui->StartSessionButton->setDisabled(true);
-    _ui->RefreshButton->setDisabled(true);
+    _ui->ChangeUrl->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     _started_editing = false;
 
     connect(_ui->ConnectButton, &QPushButton::clicked, this, [this](){
@@ -79,13 +88,8 @@ SelectServer::~SelectServer() {
 
 
 // ----------------------------------------------------------------------------------
-// Slots
-// ----------------------------------------------------------------------------------
-
-// ----------------------------------------------------------------------------------
 // Private member functions
 // ----------------------------------------------------------------------------------
-
 
 void SelectServer::try_fetch_tags() {
 

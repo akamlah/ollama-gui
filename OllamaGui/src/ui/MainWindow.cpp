@@ -79,51 +79,6 @@ MainWindow::~MainWindow() {
 
 
 // ----------------------------------------------------------------------------------
-// Slots
-// ----------------------------------------------------------------------------------
-
-void MainWindow::server_was_selected_slot() {
-    _stackedWidget->setCurrentIndex(StackedViews::SelectModelView);
-    _url_label->show();
-    _url_label->setText( "Currentnly connected to ollama server instance at: " +
-        Api::Endpoints::get_endpoints()->get_base_url().toString() );
-}
-
-
-/// @brief If model already opened, send back to that tab, elsecreate a new chat panel,
-/// connect the "Disconnect" button from the chat to the main window and add it as
-/// a tab. Then page back to chat view
-/// @param name of the model
-void MainWindow::model_was_selected_slot(QString name) {
-    for (int i = 0; i < _tabWidget->count(); i++) {
-        if (_tabWidget->tabText(i) == name) {
-            _tabWidget->setCurrentIndex(i);
-            _stackedWidget->setCurrentIndex(StackedViews::ChatView);
-            _nav_button->setText("New Model");
-            return ;
-        }
-    }
-    Chat *chat = new Chat(name, _tabWidget);
-    _tabWidget->addTab(chat, name);
-    _tabWidget->setCurrentIndex(_tabWidget->count() - 1);
-    _nav_button->show();
-    _nav_button->setText("New Model");
-    _stackedWidget->setCurrentIndex(StackedViews::ChatView);
-    QObject::connect(
-        chat,
-        SIGNAL(close_conversation_request_signal()),
-        this,
-        SLOT(close_conversation_request_slot())
-    );
-}
-
-/// @brief call chat object destructor and remove tab from tabstack
-void MainWindow::close_conversation_request_slot() {
-    _tabWidget->currentWidget()->deleteLater();
-    _tabWidget->removeTab(_tabWidget->currentIndex());
-}
-
-// ----------------------------------------------------------------------------------
 // Private member functions for initial setup
 // ----------------------------------------------------------------------------------
 
@@ -177,7 +132,6 @@ void MainWindow::configure_header_layout() {
     // Configure Layout stretch
     _header_layout->setStretch(0, 20);
     _header_layout->setStretch(1, 1);
-    _header_layout->setStretch(2, 1);
 }
 
 
@@ -250,6 +204,54 @@ void MainWindow::setup_zoomin_zoomout_shortcuts() {
     });
 }
 
+
+// ----------------------------------------------------------------------------------
+// Slots
+// ----------------------------------------------------------------------------------
+
+void MainWindow::server_was_selected_slot() {
+    _stackedWidget->setCurrentIndex(StackedViews::SelectModelView);
+    _url_label->show();
+    _url_label->setText( "Currentnly connected to ollama server instance at: " +
+        Api::Endpoints::get_endpoints()->get_base_url().toString() );
+}
+
+
+/// @brief If model already opened, send back to that tab, elsecreate a new chat panel,
+/// connect the "Disconnect" button from the chat to the main window and add it as
+/// a tab. Then page back to chat view
+/// @param name of the model
+void MainWindow::model_was_selected_slot(QString name) {
+    _nav_button->setText("New Model");
+    for (int i = 0; i < _tabWidget->count(); i++) {
+        if (_tabWidget->tabText(i) == name) {
+            _tabWidget->setCurrentIndex(i);
+            _stackedWidget->setCurrentIndex(StackedViews::ChatView);
+            return ;
+        }
+    }
+    Chat *chat = new Chat(name, _tabWidget);
+    _nav_button->show();
+    _tabWidget->addTab(chat, name);
+    _tabWidget->setCurrentIndex(_tabWidget->count() - 1);
+    _stackedWidget->setCurrentIndex(StackedViews::ChatView);
+    QObject::connect(
+        chat,
+        SIGNAL(close_conversation_request_signal()),
+        this,
+        SLOT(close_conversation_request_slot())
+    );
+}
+
+/// @brief call chat object destructor and remove tab from tabstack
+/// Change to Model selection view if no tabs remain open
+void MainWindow::close_conversation_request_slot() {
+    _tabWidget->currentWidget()->deleteLater();
+    _tabWidget->removeTab(_tabWidget->currentIndex());
+    if (_tabWidget->count() == 0) {
+        _stackedWidget->setCurrentIndex(StackedViews::SelectModelView);
+    }
+}
 
 
 // } // end namespace Ui

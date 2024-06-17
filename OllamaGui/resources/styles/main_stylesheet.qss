@@ -224,6 +224,8 @@ QPlainTextEdit[objectName^="ChangeUrl"] {
     border-radius: .4em;
     background: transparent;
     padding-left: .5em;
+    /* adaptative size for font size changes */
+    max-height: 1.9em;
 }
 
 /* --------------
