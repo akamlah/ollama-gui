@@ -9,7 +9,7 @@
 
 **Build and run:**
 
-Make sure the Ollama server is running, with ```ollama serve```. Then:
+Make sure the Ollama server is running on the host machine, with ```ollama serve```. Then:
 
 ```
 $ mkdir build
@@ -19,7 +19,7 @@ $ cmake --build .
 $ ./ollamagui
 ```  
 
-The application will ask for the desired server instance to connect to on opening. The default is localhost on port 11434. If you wid=sh to connect to a different host within you local network, note that the OLLAMA_HOST environmental variable has to be modified on the host machine.
+The application will ask for the desired server instance to connect to on opening. The default is ```localhost``` on port ```11434```. If you wish to connect to a different host within you local network, note that the ```OLLAMA_HOST``` environmental variable has to be modified on the host machine.
 
 ------
 
