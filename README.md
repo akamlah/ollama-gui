@@ -28,4 +28,7 @@ So far tested platforms:
 - MacOS 13.3.1 x86_64
 
 
-![Screenshot 2024-06-18 at 18 58 04](https://github.com/akamlah/ollama-gui/assets/87025819/375a536f-2b92-4e73-82c4-4e8e36659bc7)
+**Preview**
+
+https://github.com/akamlah/ollama-gui/assets/87025819/017ce4e6-87d3-4c57-bf7e-0941c2e4cf19
+
