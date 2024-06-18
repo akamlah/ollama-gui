@@ -90,13 +90,17 @@ void Chat::confirm_disconnect_slot() {
 
 /// @brief Slot called on prompt enter. Makes an api call to generete
 /// a reply and prints that to the screen in a fromatted way, and adds the 
-/// user's prompt above it.
+/// user's prompt above it. If model still loading or prompt empty it just
+/// returns
 void Chat::send_prompt_slot()
 {
     if (!_ui->SendPromptButton->isEnabled()) {
-        return;
+        return ;
     }
     QString prompt = (_ui->PromptEditor->toPlainText());
+    if (prompt.isEmpty()) {
+        return ;
+    }
     this->wrap_set_enabled_send_button(false);
     this->flush_prompt_editor_to_message_display(prompt);
     _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->verticalScrollBar()->maximum());
