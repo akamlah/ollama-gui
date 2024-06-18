@@ -35,7 +35,7 @@ private slots:
 
 private:
     Ui::SelectModel *_ui;
-    QNetworkAccessManager *_network_manager;
+    QNetworkAccessManager _network_manager;
     std::vector<QString> _model_list;
 
     void display_tags();

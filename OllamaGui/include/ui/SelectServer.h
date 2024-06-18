@@ -33,7 +33,7 @@ public:
 private:
 
     Ui::SelectServer *_ui;
-    QNetworkAccessManager * _network_manager;
+    QNetworkAccessManager _network_manager;
     bool _started_editing;
 
 signals:

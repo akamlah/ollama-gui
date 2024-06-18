@@ -7,7 +7,7 @@
 SelectModel::SelectModel(QWidget *parent) 
     : QWidget(parent)
     , _ui(new Ui::SelectModel)
-    , _network_manager(new QNetworkAccessManager(this))
+    , _network_manager(QNetworkAccessManager(this))
 {
     _ui->setupUi(this);
     // [ ! ] Add management of case server not responding at first api call
@@ -61,7 +61,7 @@ void SelectModel::fetch_tags() {
     _model_list.clear();
     QNetworkRequest request;
     request.setUrl(Api::Endpoints::get_endpoints()->api_urls_get.tags_url);
-    QNetworkReply *reply = _network_manager->get(request);
+    QNetworkReply *reply = _network_manager.get(request);
     QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
         QRestReply restReply(reply);
         if (restReply.isSuccess()) {

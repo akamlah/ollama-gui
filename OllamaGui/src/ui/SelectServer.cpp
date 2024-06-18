@@ -6,7 +6,7 @@
 SelectServer::SelectServer(QWidget *parent) 
     :  QWidget(parent)
     , _ui(new Ui::SelectServer)
-    , _network_manager( new QNetworkAccessManager(this))
+    , _network_manager(QNetworkAccessManager(this))
 {
     // setup ui 
     _ui->setupUi(this);
@@ -100,7 +100,7 @@ void SelectServer::try_fetch_tags() {
     qDebug() << "fetching tags";
     QNetworkRequest request;
     request.setUrl(Api::Endpoints::get_endpoints()->api_urls_get.tags_url);
-    QNetworkReply *reply = _network_manager->get(request);
+    QNetworkReply *reply = _network_manager.get(request);
     QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
         QRestReply restReply(reply);
         if (restReply.isSuccess()) {
