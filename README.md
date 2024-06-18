@@ -26,3 +26,6 @@ The application will ask for the desired server instance to connect to on openin
 So far tested platforms: 
 - Linux x86_64 (X11 AwesomeWM Arch)
 - MacOS 13.3.1 x86_64
+
+
+![Screenshot 2024-06-18 at 18 58 04](https://github.com/akamlah/ollama-gui/assets/87025819/375a536f-2b92-4e73-82c4-4e8e36659bc7)
