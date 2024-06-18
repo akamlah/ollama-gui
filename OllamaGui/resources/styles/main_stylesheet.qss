@@ -157,12 +157,15 @@ QCheckBox::indicator::checked
 ---------------*/
 
 
-/* Model list in select server view */
+/* Model list in select server view and conversation list */
 
-QListWidget[objectName^="modelPreview"] {
+QListWidget[objectName^="modelPreview"]
+, QListWidget[objectName^="ConversationsListWidget"]
+{
     background: #202020;
     border: none;
 }
+
 QListWidget[objectName^="modelPreview"]::item {
     color: #6b6b6b;
 }

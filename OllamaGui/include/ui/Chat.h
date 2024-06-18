@@ -16,7 +16,6 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-
 #include <vector>
 #include <api/Endpoints.h>
 

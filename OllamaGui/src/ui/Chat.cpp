@@ -15,7 +15,7 @@ Chat::Chat(QString model, QWidget *parent)
 {
     // setup ui 
     _ui->setupUi(this);
-    
+
     _ui->MessageDisplay->setDocument(&_doc);
     _ui->MessageDisplay->setReadOnly(true);
 
