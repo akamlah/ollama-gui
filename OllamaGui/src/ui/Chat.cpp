@@ -28,8 +28,15 @@ Chat::Chat(QString model, QWidget *parent)
     this->load_model_request();
 
     // set default states on chat tab opening
+    _ui->CheckBoxContext->setChecked(true);
     _ui->CheckBoxStream->setChecked(true);
     _options.StreamEnabled = true;
+
+    // [ ! ] change later when more formats supported
+    _ui->PlainTextExplanationLabel->setWordWrap(true);
+    _ui->CheckBoxPlainText->setChecked(true);
+    _ui->CheckBoxPlainText->setAttribute(Qt::WA_TransparentForMouseEvents);
+    _ui->CheckBoxPlainText->setFocusPolicy(Qt::NoFocus);
 
     // Open a new conversation
     // [ ! ] do this better
@@ -90,7 +97,6 @@ void Chat::send_prompt_slot()
         return;
     }
     QString prompt = (_ui->PromptEditor->toPlainText());
-    _qas.push_back(prompt);
     this->wrap_set_enabled_send_button(false);
     this->flush_prompt_editor_to_message_display(prompt);
     _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->verticalScrollBar()->maximum());
@@ -117,8 +123,9 @@ void Chat::send_prompt_slot()
     QObject::connect(reply, &QNetworkReply::readyRead, this, [reply, this]() {
         while(reply->bytesAvailable()) {
             QByteArray response = reply->read(reply->bytesAvailable());
+            qDebug() << "Chat::send_prompt_slot - Response:\r\n" << response;
             QJsonObject json_obj = QJsonDocument::fromJson(response).object();
-            qDebug() << "Chat::send_prompt_slot - Response:\r\n" << json_obj;
+            // qDebug() << "Chat::send_prompt_slot - Response:\r\n" << json_obj;
             auto model_answer = json_obj.value("response").toString();
             if (_options.StreamEnabled)
                 _cursor->insertText(model_answer);

@@ -33,9 +33,9 @@ SelectServer::SelectServer(QWidget *parent)
     _started_editing = false;
 
     connect(_ui->ConnectButton, &QPushButton::clicked, this, [this](){
+        _started_editing = false;
         _ui->StartSessionButton->setDisabled(true);
         _ui->RefreshButton->setDisabled(true);
-        _started_editing = false;
         if (!Api::Endpoints::get_endpoints()->set_base_url(_ui->ChangeUrl->toPlainText())) {
             _ui->InvalidUrlLabel->setText("Invalid URL" + _ui->ChangeUrl->toPlainText());
             _ui->InvalidUrlLabel->show();

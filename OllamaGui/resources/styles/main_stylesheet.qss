@@ -121,6 +121,7 @@ QLabel[objectName^="UrlInstancelabel"]
 , QLabel[objectName^="InfoLabel2"]
 , QLabel[objectName^="InfoLabel3"]
 , QLabel[objectName^="CurrentUrlLabel"]
+, QLabel[objectName^="PlainTextExplanationLabel"]
 {
     color: #6b6b6b;
 }
@@ -216,7 +217,8 @@ QTextEdit[objectName^="MessageDisplay"]  {
 QPlainTextEdit[objectName^="PromptEditor"] {
     background-color: #171717;
     color: #d0d0d0;
-    padding: 1em;
+    padding: .5em;
+    max-height: 5em;
 }
 
 QPlainTextEdit[objectName^="ChangeUrl"] {

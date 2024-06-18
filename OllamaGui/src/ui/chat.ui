@@ -28,7 +28,7 @@
 
                             <widget class="QPushButton" name="DisconnectButton">
                                 <property name="text">
-                                    <string>Disconnect</string>
+                                    <string>Close model</string>
                                 </property>
                             </widget>
                         </item>
@@ -46,6 +46,13 @@
                                         </widget>
                                     </item>
                                     <item>
+                                        <widget class="QCheckBox" name="CheckBoxContext">
+                                            <property name="text">
+                                                <string>Use conversation context</string>
+                                            </property>
+                                        </widget>                                    
+                                    </item>
+                                    <item>
                                         <widget class="QCheckBox" name="CheckBoxStream">
                                             <property name="text">
                                                 <string>Word Stream</string>
@@ -60,13 +67,15 @@
                                         </widget>
                                     </item>
 
-                                    <!-- <item>
+                                    <item>
                                         <widget class="QCheckBox" name="CheckBoxDetails">
                                             <property name="text">
-                                                <string>Append response details</string>
+                                                <string>Show response details</string>
                                             </property>
                                         </widget>                                    
-                                    </item> -->
+                                    </item>
+
+
 
                                     <!-- <item>
                                         <layout class="QHBoxLayout" name="horizontalLayout_9879" stretch="1, 1, 4, 4">
@@ -141,31 +150,73 @@
                 <item>
                     <widget class="QGroupBox" name="ActiveChatGroup">
 
-                        <layout class="QVBoxLayout" name="verticalLayout" stretch="11,2,1">
+                        <layout class="QVBoxLayout" name="verticalLayout" stretch="50,1">
                             <item>
                                 <widget class="QTextEdit" name="MessageDisplay"/>
                             </item>
                             <item>
-                                <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="5,1">
+                                <layout class="QHBoxLayout" name="horizontalLayout_394569" stretch="20,1">
                                     <item>
-                                        <widget class="QLabel" name="ShortctuLabel">
-                                            <property name="text">
-                                                <string></string>
-                                            </property>
-                                        </widget>
+                                        <layout class="QVBoxLayout" name="verticalLayout_987598237" stretch="1,1">
+                                            <item>
+                                                <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="5,1">
+                                                    <item>
+                                                        <widget class="QLabel" name="ShortctuLabel">
+                                                            <property name="text">
+                                                                <string></string>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                    <item>
+                                                        <widget class="QPushButton" name="SendPromptButton">
+                                                            <property name="text">
+                                                                <string>Send Prompt</string>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                </layout>
+                                            </item>
+                                            <item>
+                                                <widget class="QPlainTextEdit" name="PromptEditor"/>
+                                            </item>
+                                        </layout>
                                     </item>
                                     <item>
-                                        <widget class="QPushButton" name="SendPromptButton">
-                                            <property name="text">
-                                                <string>Send Prompt</string>
-                                            </property>
-                                        </widget>
+                                        <layout class="QVBoxLayout" name="verticalLayout_9875982" stretch=" 1, 1, 2">
+                                            <!-- <item>
+                                                <widget class="QLabel" name="fybjfynuunl578o">
+                                                    <property name="text">
+                                                        <string> </string>
+                                                    </property>
+                                                </widget>
+                                            </item> -->
+                                            <item>
+                                                <widget class="QCheckBox" name="CheckBoxPlainText">
+                                                    <property name="text">
+                                                        <string>Plain Text</string>
+                                                    </property>
+                                                </widget>                                    
+                                            </item>
+                                            <item>
+                                                <widget class="QLabel" name="PlainTextExplanationLabel">
+                                                    <property name="text">
+                                                        <string>No other formats currently supported</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <!-- placeholder -->
+                                            <item>
+                                                <widget class="QLabel" name="t4t5tygebu">
+                                                    <property name="text">
+                                                        <string></string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                        </layout>
                                     </item>
                                 </layout>
                             </item>
-                            <item>
-                                <widget class="QPlainTextEdit" name="PromptEditor"/>
-                            </item>
+
                         </layout>
                     </widget>
                 </item>

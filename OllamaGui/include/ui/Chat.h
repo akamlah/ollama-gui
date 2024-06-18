@@ -62,7 +62,7 @@ private:
     Options _options;
     static const MessageHtmlStrings _html;
 
-    std::vector<QString> _qas;
+    QJsonArray _context;
     std::vector<QString> _conversations;
 
 private slots:
