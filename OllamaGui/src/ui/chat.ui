@@ -46,13 +46,6 @@
                                         </widget>
                                     </item>
                                     <item>
-                                        <widget class="QCheckBox" name="CheckBoxContext">
-                                            <property name="text">
-                                                <string>Use conversation context</string>
-                                            </property>
-                                        </widget>                                    
-                                    </item>
-                                    <item>
                                         <widget class="QCheckBox" name="CheckBoxStream">
                                             <property name="text">
                                                 <string>Word Stream</string>
@@ -73,6 +66,27 @@
                                                 <string>Show response details</string>
                                             </property>
                                         </widget>                                    
+                                    </item>
+                                    <item>
+                                        <widget class="QCheckBox" name="CheckBoxContext">
+                                            <property name="text">
+                                                <string>Use context</string>
+                                            </property>
+                                        </widget>                                    
+                                    </item>
+                                    <item>
+                                        <widget class="QLabel" name="ContextExplanationLabel">
+                                            <property name="text">
+                                                <string>Can impact performance as context grows.</string>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                    <item>
+                                        <widget class="QPushButton" name="ClearContextButton">
+                                            <property name="text">
+                                                <string>Clear context cache</string>
+                                            </property>
+                                        </widget>
                                     </item>
 
 
@@ -159,7 +173,7 @@
                                     <item>
                                         <layout class="QVBoxLayout" name="verticalLayout_987598237" stretch="1,1">
                                             <item>
-                                                <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="5,1">
+                                                <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="5,1, 1">
                                                     <item>
                                                         <widget class="QLabel" name="ShortctuLabel">
                                                             <property name="text">
@@ -171,6 +185,13 @@
                                                         <widget class="QPushButton" name="SendPromptButton">
                                                             <property name="text">
                                                                 <string>Send Prompt</string>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                    <item>
+                                                        <widget class="QPushButton" name="StopButton">
+                                                            <property name="text">
+                                                                <string>Stop</string>
                                                             </property>
                                                         </widget>
                                                     </item>

@@ -88,6 +88,10 @@ void SelectModel::fetch_tags() {
                     _ui->currentlyLoadedLabel->setText("An error occurred");
                 }
             }
+            else {
+                qDebug() << "Chat::fetch_tags - Error: empty response";
+                _ui->currentlyLoadedLabel->setText("An error occurred");
+            }
         }
         else {
             _ui->currentlyLoadedLabel->setText("No connection");

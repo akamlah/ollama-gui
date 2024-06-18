@@ -31,9 +31,9 @@ class Chat: public QWidget
 private:
 
     typedef struct options {
+        bool ContextEnabled = false;
         bool StreamEnabled = false;
         bool AddDetails = false;
-        bool SendContext = false;
     } Options;
 
     // rudimantal styling -> read from file later and find more elegant 
@@ -43,6 +43,7 @@ private:
         QString model_name = "<p style=\"color: #7960ca; font-weight: bold\">";
         QString user_name = "<p style=\"color: #4caf91; font-weight: bold\">";
         QString reset = "</p><br>";
+        QString muted = "<p style=\"color: #6b6b6b\">";
     } MessageHtmlStrings;
 
 public:
@@ -57,6 +58,7 @@ private:
     QTextDocument _doc;
     QTextCursor _cursor;
     QNetworkAccessManager _network_manager;
+    QByteArray * _buffer;
     // other
     QString _model_name;
 
@@ -69,14 +71,17 @@ private:
 private slots:
     void send_prompt_slot();
     void confirm_disconnect_slot();
+    void clear_context_slot();
+    void stop_generating_slot();
 
 signals:
     void close_conversation_request_signal();
+    void stop_generating_signal();
 
 private:
     void parse_tag();
     void load_model_request();
-    void wrap_set_enabled_send_button(bool setEnabled);
+    void prompt_button_and_label_ready_to_send(bool ready);
     void get_title();
     void flush_prompt_editor_to_message_display(const QString& prompt);
 

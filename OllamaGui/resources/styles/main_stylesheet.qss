@@ -56,6 +56,8 @@ QPushButton[objectName^="OKButton"]::hover
 /* Buttons that get red on hover */
 QPushButton[objectName^="CancelButton"]::hover
 , QPushButton[objectName^="DisconnectButton"]::hover
+, QPushButton[objectName^="ClearContextButton"]::hover
+, QPushButton[objectName^="StopButton"]::hover
 {
     background-color: #9e346e;
 }
@@ -102,7 +104,7 @@ QLabel[objectName^="clickToSelectLabel"] {
     margin-top: 0px;
 }
 
-/* mute labels */
+/* muted labels */
 QLabel[objectName^="UrlInstancelabel"]
 , QLabel[objectName^="ShortctuLabel"]
 , QLabel[objectName^="WordStreamExplanationLabel"]
@@ -110,6 +112,7 @@ QLabel[objectName^="UrlInstancelabel"]
 , QLabel[objectName^="InfoLabel3"]
 , QLabel[objectName^="CurrentUrlLabel"]
 , QLabel[objectName^="PlainTextExplanationLabel"]
+, QLabel[objectName^="ContextExplanationLabel"]
 {
     color: #6b6b6b;
 }
