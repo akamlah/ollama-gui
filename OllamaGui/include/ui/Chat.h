@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QNetworkAccessManager>
 #include <QTextDocument>
+#include <QTextCursor>
 #include <QShortcut>
 #include <QScrollBar>
 
@@ -32,6 +33,7 @@ private:
     typedef struct options {
         bool StreamEnabled = false;
         bool AddDetails = false;
+        bool SendContext = false;
     } Options;
 
     // rudimantal styling -> read from file later and find more elegant 
@@ -50,12 +52,11 @@ public:
 
 private:
     // initializer list
-    QWidget *_parent;
     Ui::Chat *_ui;
     QString _model_tag;
-    QTextDocument *_doc;
-    QTextCursor* _cursor;
-    QNetworkAccessManager *_network_manager;
+    QTextDocument _doc;
+    QTextCursor _cursor;
+    QNetworkAccessManager _network_manager;
     // other
     QString _model_name;
 

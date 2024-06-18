@@ -6,18 +6,16 @@ const Chat::MessageHtmlStrings Chat::_html = Chat::MessageHtmlStrings();
 
 Chat::Chat(QString model, QWidget *parent) 
     :  QWidget(parent)
-    , _parent(parent) 
     , _ui(new Ui::Chat)
     , _model_tag(model)
-    , _doc(new QTextDocument(this))
-    , _cursor(_cursor = new QTextCursor(_doc))
-    , _network_manager(new QNetworkAccessManager(this))
+    , _doc(QTextDocument(this))
+    , _cursor(QTextCursor(&_doc))
+    , _network_manager(QNetworkAccessManager(this))
 {
     // setup ui 
     _ui->setupUi(this);
-    this->setObjectName("chatt");
     
-    _ui->MessageDisplay->setDocument(_doc);
+    _ui->MessageDisplay->setDocument(&_doc);
     _ui->MessageDisplay->setReadOnly(true);
 
     _ui->WordStreamExplanationLabel->setWordWrap(true);
@@ -27,19 +25,35 @@ Chat::Chat(QString model, QWidget *parent)
     this->parse_tag();
     this->load_model_request();
 
-    // set default states on chat tab opening
-    _ui->CheckBoxContext->setChecked(true);
-    _ui->CheckBoxStream->setChecked(true);
-    _options.StreamEnabled = true;
 
-    // [ ! ] change later when more formats supported
+    // OPTIONS:
+
+    // context
+    _options.SendContext = true;
+    _ui->CheckBoxContext->setChecked(true);
+    connect(_ui->CheckBoxContext, &QCheckBox::checkStateChanged, this, 
+        [this](){ _options.SendContext = (_ui->CheckBoxContext->isChecked()) ? true : false; } );
+
+    // stream
+    _options.StreamEnabled = true;
+    _ui->CheckBoxStream->setChecked(true);
+    connect(_ui->CheckBoxStream, &QCheckBox::checkStateChanged, this, 
+        [this](){ _options.StreamEnabled = (_ui->CheckBoxStream->isChecked()) ? true : false; } );
+
+    // details
+    _options.AddDetails = false;
+    connect(_ui->CheckBoxDetails, &QCheckBox::checkStateChanged, this, 
+        [this](){ _options.AddDetails = (_ui->CheckBoxDetails->isChecked()) ? true : false; } );
+
+
+    // Prompt options: [ ! ] change later when more formats supported
     _ui->PlainTextExplanationLabel->setWordWrap(true);
     _ui->CheckBoxPlainText->setChecked(true);
     _ui->CheckBoxPlainText->setAttribute(Qt::WA_TransparentForMouseEvents);
     _ui->CheckBoxPlainText->setFocusPolicy(Qt::NoFocus);
 
     // Open a new conversation
-    // [ ! ] do this better
+    // [ ! ] todo with database
     _conversations.push_back("conv 1");
     _ui->ConversationsListWidget->addItem("Conv " 
         +  QString::fromUtf8(std::to_string(_conversations.size()).c_str()));
@@ -50,13 +64,9 @@ Chat::Chat(QString model, QWidget *parent)
     connect(_ui->SendPromptButton, &QPushButton::clicked, this, [this]{ Chat::send_prompt_slot(); });
 
     // configure options area signals and slots
-    // [ ! ] make also ollama actually unload the model from ram
+    // [ ! ] make also ollama actually unload the model from ram in lesss than 5 minutes (default)
     connect(_ui->DisconnectButton, &QPushButton::clicked, this, &Chat::confirm_disconnect_slot);
-    connect(_ui->CheckBoxStream, &QCheckBox::checkStateChanged, this, 
-        [this]() {
-            _options.StreamEnabled = (_ui->CheckBoxStream->isChecked()) ? true : false;
-        }
-    );
+    
 }
 
 Chat::~Chat() {
@@ -75,7 +85,6 @@ void Chat::confirm_disconnect_slot() {
     QString message = "Confirm disconnection from " + _model_name + " (" 
         + _model_tag + ")?" + "\n" + "All cached conversation will be lost";
     Dialog * dialog = new Dialog(message, this);
-    // dialog->setMinimumSize(_parent->minimumSize());
     connect(dialog, &Dialog::confirmed_signal, this, [this, dialog]() {
         dialog->close();
         emit close_conversation_request_signal();
@@ -94,36 +103,49 @@ void Chat::confirm_disconnect_slot() {
 /// returns
 void Chat::send_prompt_slot()
 {
+    // do nothing if model or reply still loading
     if (!_ui->SendPromptButton->isEnabled()) {
         return ;
     }
+
+    // read prompt and return if empty
     QString prompt = (_ui->PromptEditor->toPlainText());
     if (prompt.isEmpty()) {
         return ;
     }
+
+    // print user name and prompt to display
     this->wrap_set_enabled_send_button(false);
     this->flush_prompt_editor_to_message_display(prompt);
     _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->verticalScrollBar()->maximum());
 
     // add model name to display
-    _cursor->insertHtml(Chat::_html.model_name % _model_name);
-    _cursor->insertHtml(Chat::_html.reset);
-    _cursor->insertText("\r\n");
+    _cursor.insertHtml(Chat::_html.model_name % _model_name);
+    _cursor.insertHtml(Chat::_html.reset);
+    _cursor.insertText("\r\n");
     _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->verticalScrollBar()->maximum());
 
+    // build json request and write it to json byte array
     QNetworkRequest request;
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setUrl(Api::Endpoints::get_endpoints()->api_urls_post.generate_url);
-
     QJsonObject obj;
     obj.insert("model", QJsonValue::fromVariant(_model_tag));
     obj.insert("prompt", QJsonValue::fromVariant(prompt));
     if (!_options.StreamEnabled)
         obj.insert("stream", QJsonValue::fromVariant(false));
+    if (!_options.SendContext && !_context.isEmpty()) {
+        // [ ? ]
+        obj.insert("context", QJsonValue::fromVariant(_context));
+    }
 
     QJsonDocument doc(obj);
-    QByteArray data = doc.toJson();    
-    QNetworkReply *reply = _network_manager->post(request, data);
+    QByteArray data = doc.toJson();
+
+    // make request sending json byte array and save it into a reply object pointer
+    QNetworkReply *reply = _network_manager.post(request, data);
+
+    // relply callback on bytes available
     QObject::connect(reply, &QNetworkReply::readyRead, this, [reply, this]() {
         while(reply->bytesAvailable()) {
             QByteArray response = reply->read(reply->bytesAvailable());
@@ -132,21 +154,24 @@ void Chat::send_prompt_slot()
             // qDebug() << "Chat::send_prompt_slot - Response:\r\n" << json_obj;
             auto model_answer = json_obj.value("response").toString();
             if (_options.StreamEnabled)
-                _cursor->insertText(model_answer);
+                _cursor.insertText(model_answer);
             else
-                _cursor->insertMarkdown(model_answer);
+                _cursor.insertMarkdown(model_answer);
             _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->verticalScrollBar()->maximum());
         }
         _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->verticalScrollBar()->maximum());
     });
 
+    // relply callback on reply finished
     QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
-        _cursor->insertHtml(Chat::_html.reset % "\n");
-        _cursor->insertText("\r\n");
-        _cursor->insertText("\r\n");
-        reply->deleteLater();
+        // reset ui
+        _cursor.insertHtml(Chat::_html.reset % "\n");
+        _cursor.insertText("\r\n");
+        _cursor.insertText("\r\n");
         this->wrap_set_enabled_send_button(true);
         _ui->MessageDisplay->verticalScrollBar()->setSliderPosition(_ui->MessageDisplay->verticalScrollBar()->maximum());
+        // async delete
+        reply->deleteLater();
     });
 
 }
@@ -184,7 +209,7 @@ void Chat::load_model_request() {
     QByteArray data = doc.toJson();
 
     // Do something if no connection [ ! ]
-    QNetworkReply *reply = _network_manager->post(request, data);
+    QNetworkReply *reply = _network_manager.post(request, data);
     QObject::connect(reply, &QNetworkReply::readyRead, this, [reply, this]() {
         // ... do some loading animation
     });
@@ -193,18 +218,18 @@ void Chat::load_model_request() {
         // ... end loading animation
         this->wrap_set_enabled_send_button(true);
     });
-    _cursor->insertHtml(Chat::_html.reset % "\n");
+    _cursor.insertHtml(Chat::_html.reset % "\n");
 }
 
 
 void Chat::flush_prompt_editor_to_message_display(const QString& prompt) {
     // put prompt to display
     // delete trailing & leading newlines [ ! ]
-    _cursor->insertHtml(Chat::_html.user_name % QString("you") % Chat::_html.reset);
-    _cursor->insertText(prompt);
-    _cursor->insertHtml(Chat::_html.reset % "\n");
-    _cursor->insertText("\r\n");
-    _cursor->insertText("\r\n");
+    _cursor.insertHtml(Chat::_html.user_name % QString("you") % Chat::_html.reset);
+    _cursor.insertText(prompt);
+    _cursor.insertHtml(Chat::_html.reset % "\n");
+    _cursor.insertText("\r\n");
+    _cursor.insertText("\r\n");
     _ui->PromptEditor->setPlainText(""); // reset prompt editor
 }
 
@@ -242,7 +267,7 @@ void Chat::get_title() {
     QByteArray data = doc.toJson();
     qDebug() << "Chat::get_title Response:\r\n" << doc;
     
-    QNetworkReply *reply = _network_manager->post(request, data);
+    QNetworkReply *reply = _network_manager.post(request, data);
     QObject::connect(reply, &QNetworkReply::finished, this, [reply, this]() {
         QRestReply restReply(reply);
         QByteArray response = reply->readAll();

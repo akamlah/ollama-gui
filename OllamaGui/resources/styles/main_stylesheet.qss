@@ -7,18 +7,6 @@ QWidget {
     color: #a1a1a1;
 }
 
-/* QStackedWidget{
-    padding: 0px;
-    background-color: #2f725e;
-    margin-left: 0px;
-}
-QWidget[objectName^=chatt]{
-    padding: 0px;
-    background-color: #45a6af;
-    margin-left: 0px;
-} */
-
-
 /* -------------
     MainWindow
 ---------------*/
